@@ -66,7 +66,7 @@ const load = () => {
     total.value = res.data.total
   })
 }
-load()  // 调用 load方法拿到后台数据
+load()  // use load method to get background data
 
 const reset = () => {
   name.value = ''
@@ -102,7 +102,7 @@ const rules = reactive({
 
 const ruleFormRef = ref()
 
-// 新增
+// New
 const handleAdd = () => {
   dialogFormVisible.value = true
   if(user.role ==="ADMIN"){
@@ -113,24 +113,24 @@ const handleAdd = () => {
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = {}
-    valueHtml.value = ''  // 富文本
+    valueHtml.value = ''  // information
   })
 }
 
-// 保存
+// Save
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
+  ruleFormRef.value.validate(valid => {   // valid is the result
     if (valid) {
-      state.form.content = valueHtml.value  // 富文本保存内容
+      state.form.content = valueHtml.value  // save information
       request.request({
         url: '/availability',
         method: state.form.id ? 'put' : 'post',
         data: state.form
       }).then(res => {
         if (res.code === '200') {
-          ElMessage.success('保存成功')
+          ElMessage.success('save successfully')
           dialogFormVisible.value = false
-          load()  // 刷新表格数据
+          load()  // refresh data
         } else {
           ElMessage.error(res.msg)
         }
@@ -139,52 +139,34 @@ const save = () => {
   })
 }
 
-// 编辑
+// edit
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = JSON.parse(JSON.stringify(raw))
-    valueHtml.value = raw.content  // 富文本
+    valueHtml.value = raw.content  // raw data
   })
 }
 
-// 删除
+// deletion
 const del = (id) => {
   request.delete('/availability/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // 刷新表格数据
+      load()  // refresh data
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-// 导出接口 这些没必要
-// const exportData = () => {
-//   window.open(`http://${config.serverUrl}/availability/export`)
-// }
-//
-//
-// const handleImportSuccess = () => {
-//   // 刷新表格
-//   load()
-//   ElMessage.success("Import success")
-// }
-//
-// const handleFileUploadSuccess = (res) => {
-//   state.form.file = res.data
-//   ElMessage.success('upload success')
-// }
 
-// 如果 view 想显示tutor头像可以用 或者用其他方法
-//方法还没确定
 const handleImgUploadSuccess = (res) => {
   state.form.img = res.data
   ElMessage.success('image upload success')
 }
-// 这里是 schedule弹窗的脚本
+// open schedule tab
 const scheduleDialogVisible = ref(false)
 const handleSchedule = (row) =>{
   scheduleDialogVisible.value = true
@@ -203,9 +185,9 @@ const handleScheduleSave = (row) =>{
     }
   })
 }
-// view 的弹窗脚本
+// view tab
 const viewDialogVisible = ref(false)
-// 这个handle 要有不然弹窗打不开
+// need this handle view to get the tab open
 const handleView = (row) =>{
   viewDialogVisible.value = true
 }
@@ -248,20 +230,20 @@ const handleView = (row) =>{
 <!--        <el-button type="primary">-->
 <!--          <el-icon style="vertical-align: middle">-->
 <!--            <Bottom />-->
-<!--          </el-icon>  <span style="vertical-align: middle"> 导入 </span>-->
+<!--          </el-icon>  <span style="vertical-align: middle"> import </span>-->
 <!--        </el-button>-->
 <!--      </el-upload>-->
 <!--      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('availability.export')">-->
 <!--        <el-icon style="vertical-align: middle">-->
 <!--          <Top />-->
-<!--        </el-icon>  <span style="vertical-align: middle"> 导出 </span>-->
+<!--        </el-icon>  <span style="vertical-align: middle"> export </span>-->
 <!--      </el-button>-->
-<!--      <el-popconfirm title="您确定删除吗？" @confirm="confirmDelBatch" v-if="auths.includes('availability.deleteBatch')">-->
+<!--      <el-popconfirm title="You sure you want to delete" @confirm="confirmDelBatch" v-if="auths.includes('availability.deleteBatch')">-->
 <!--        <template #reference>-->
 <!--          <el-button type="danger" style="margin-left: 5px">-->
 <!--            <el-icon style="vertical-align: middle">-->
 <!--              <Remove />-->
-<!--            </el-icon>  <span style="vertical-align: middle"> 批量删除 </span>-->
+<!--            </el-icon>  <span style="vertical-align: middle"> sectional delete </span>-->
 <!--          </el-button>-->
 <!--        </template>-->
 <!--      </el-popconfirm>-->
