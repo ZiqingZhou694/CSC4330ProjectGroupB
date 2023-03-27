@@ -1,0 +1,44 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/university-tutor-center?serverTimezone=GMT%2b8
+    username: root
+    password: 123456
+    hikari:
+      minimum-idle: 10
+      connection-test-query: SELECT 1
+  # swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    servlet:
+      load-on-startup: 1  # Initialize DispatcherServlet
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+sa-token:
+  token-name: Authorization
+  # Token validity period, in seconds. Default is 2 hours, and -1 means it never expires
+  timeout: 7200
+  # concurrent login allowed for the same account TRUE or FALSE
+  is-concurrent: true
+  # multiple users login to the same account with the same token
+  is-share: true
+#  token-style: simple-uuid
+  # output log
+  is-log: false
+  # must be Bearer {token}, Bearer have space behind
+  token-prefix: Bearer
+  # jwt key
+  jwt-secret-key: dsakdhbkasndsanbdksalsakdljkadlasldsadlsajd20981u301))_-w2--2
+
+# need file to store something like img or etc.
+file:
+  download:
+    ip: localhost
