@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("sys_user")
-@ApiModel(value = "User model", description = "")
+@ApiModel(value = "User", description = "")
 public class User implements Serializable {
 
 private static final long serialVersionUID = 1L;

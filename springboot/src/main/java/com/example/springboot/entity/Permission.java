@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("sys_permission")
-@ApiModel(value = "Permission model", description = "")
+@ApiModel(value = "Permission", description = "")
 public class Permission implements Serializable {
 
 private static final long serialVersionUID = 1L;
