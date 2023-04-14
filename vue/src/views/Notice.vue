@@ -16,21 +16,21 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// delete by Selection
+// 批量删除
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
 
 const confirmDelBatch = () => {
   if (!multipleSelection.value || !multipleSelection.value.length) {
-    ElMessage.warning("Please select data")
+    ElMessage.warning("请选择数据")
     return
   }
   const idArr = multipleSelection.value.map(v => v.id)
   request.post('/notice/del/batch', idArr).then(res => {
     if (res.code === '200') {
-      ElMessage.success('The operation succeeded')
-      load()  // Refresh the data of table
+      ElMessage.success('操作成功')
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
@@ -49,7 +49,7 @@ const load = () => {
     total.value = res.data.total
   })
 }
-load()  // Call load() to get the backend data
+load()  // 调用 load方法拿到后台数据
 
 const reset = () => {
   name.value = ''
@@ -60,12 +60,12 @@ const dialogFormVisible = ref(false)
 
 const rules = reactive({
   name: [
-    { required: true, message: 'Please enter a name', trigger: 'blur' },
+    { required: true, message: '请输入名称', trigger: 'blur' },
   ]
 })
 const ruleFormRef = ref()
 
-// add
+// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -74,9 +74,9 @@ const handleAdd = () => {
   })
 }
 
-// save
+// 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // check if the result is valid
+  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
     if (valid) {
       request.request({
         url: '/notice',
@@ -84,9 +84,9 @@ const save = () => {
         data: state.form
       }).then(res => {
         if (res.code === '200') {
-          ElMessage.success('Save successfully')
+          ElMessage.success('保存成功')
           dialogFormVisible.value = false
-          load()  // Refresh the data of table
+          load()  // 刷新表格数据
         } else {
           ElMessage.error(res.msg)
         }
@@ -95,7 +95,7 @@ const save = () => {
   })
 }
 
-// edit
+// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -104,19 +104,19 @@ const handleEdit = (raw) => {
   })
 }
 
-// delete
+// 删除
 const del = (id) => {
   request.delete('/notice/' + id).then(res => {
     if (res.code === '200') {
-      ElMessage.success('The operation succeeded')
-      load()  // Refresh the data of table
+      ElMessage.success('操作成功')
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-// Export the interface
+// 导出接口
 const exportData = () => {
   window.open(`http://${config.serverUrl}/notice/export`)
 }
@@ -126,34 +126,34 @@ const token = userStore.getBearerToken
 const auths =  userStore.getAuths
 
 const handleImportSuccess = () => {
-  // Refresh table
+  // 刷新表格
   load()
-  ElMessage.success("The import succeeded")
+  ElMessage.success("导入成功")
 }
 
 const handleFileUploadSuccess = (res) => {
   state.form.file = res.data
-  ElMessage.success('The upload is successful')
+  ElMessage.success('上传成功')
 }
 const handleImgUploadSuccess = (res) => {
   state.form.img = res.data
-  ElMessage.success('The upload is successful')
+  ElMessage.success('上传成功')
 }
 </script>
 
 <template>
   <div>
     <div>
-      <el-input v-model="name" placeholder="Please enter a name" class="w300" />
+      <el-input v-model="name" placeholder="请输入名称" class="w300" />
       <el-button type="primary" class="ml5" @click="load">
         <el-icon style="vertical-align: middle">
           <Search />
-        </el-icon>  <span style="vertical-align: middle"> Search </span>
+        </el-icon>  <span style="vertical-align: middle"> 搜索 </span>
       </el-button>
       <el-button type="warning" class="ml5" @click="reset">
         <el-icon style="vertical-align: middle">
           <RefreshLeft />
-        </el-icon>  <span style="vertical-align: middle"> reset </span>
+        </el-icon>  <span style="vertical-align: middle"> 重置 </span>
       </el-button>
 
     </div>
@@ -162,7 +162,7 @@ const handleImgUploadSuccess = (res) => {
       <el-button type="success" @click="handleAdd" v-if="auths.includes('notice.add')">
         <el-icon style="vertical-align: middle">
           <Plus />
-        </el-icon>  <span style="vertical-align: middle"> add </span>
+        </el-icon>  <span style="vertical-align: middle"> 新增 </span>
       </el-button>
       <el-upload
           v-if="auths.includes('notice.import')"
@@ -182,14 +182,14 @@ const handleImgUploadSuccess = (res) => {
       <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('notice.export')">
         <el-icon style="vertical-align: middle">
           <Top />
-        </el-icon>  <span style="vertical-align: middle"> Export </span>
+        </el-icon>  <span style="vertical-align: middle"> 导出 </span>
       </el-button>
-      <el-popconfirm title="delete?" @confirm="confirmDelBatch" v-if="auths.includes('notice.deleteBatch')">
+      <el-popconfirm title="您确定删除吗？" @confirm="confirmDelBatch" v-if="auths.includes('notice.deleteBatch')">
         <template #reference>
           <el-button type="danger" style="margin-left: 5px">
             <el-icon style="vertical-align: middle">
               <Remove />
-            </el-icon>  <span style="vertical-align: middle"> multiple deletion </span>
+            </el-icon>  <span style="vertical-align: middle"> 批量删除 </span>
           </el-button>
         </template>
       </el-popconfirm>
@@ -198,18 +198,18 @@ const handleImgUploadSuccess = (res) => {
     <div style="margin: 10px 0">
       <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-      <el-table-column prop="id" label="id"></el-table-column>
-      <el-table-column prop="name" label="name"></el-table-column>
-      <el-table-column prop="content" label="content"></el-table-column>
-      <el-table-column prop="user" label="user"></el-table-column>
-      <el-table-column prop="userid" label="userid"></el-table-column>
+      <el-table-column prop="id" label="编号"></el-table-column>
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="content" label="内容"></el-table-column>
+      <el-table-column prop="user" label="创建人"></el-table-column>
+      <el-table-column prop="userid" label="创建人id"></el-table-column>
 
-        <el-table-column label="operate" width="180">
+        <el-table-column label="操作" width="180">
           <template #default="scope">
-            <el-button type="primary" @click="handleEdit(scope.row)" v-if="auths.includes('notice.edit')">edit</el-button>
-            <el-popconfirm title="delete?" @confirm="del(scope.row.id)" v-if="auths.includes('notice.delete')">
+            <el-button type="primary" @click="handleEdit(scope.row)" v-if="auths.includes('notice.edit')">编辑</el-button>
+            <el-popconfirm title="您确定删除吗？" @confirm="del(scope.row.id)" v-if="auths.includes('notice.delete')">
               <template #reference>
-                <el-button type="danger">delete</el-button>
+                <el-button type="danger">删除</el-button>
               </template>
             </el-popconfirm>
           </template>
@@ -230,21 +230,21 @@ const handleImgUploadSuccess = (res) => {
       />
     </div>
 
-    <el-dialog v-model="dialogFormVisible" title="AnnouncementInformation" width="40%">
+    <el-dialog v-model="dialogFormVisible" title="公告信息" width="40%">
       <el-form ref="ruleFormRef" :rules="rules" :model="state.form" label-width="80px" style="padding: 0 20px" status-icon>
-        <el-form-item prop="name" label="name">
+        <el-form-item prop="name" label="名称">
           <el-input v-model="state.form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item prop="content" label="content">
+        <el-form-item prop="content" label="内容">
           <el-input type="textarea" v-model="state.form.content" autocomplete="off"></el-input>
         </el-form-item>
 
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">cancel</el-button>
+        <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="save">
-          save
+          保存
         </el-button>
       </span>
       </template>

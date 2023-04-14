@@ -5,7 +5,7 @@ import {onMounted} from "vue";
 onMounted(() => {
   let option = {
     title: {
-      text: "",
+      text: "咖啡销量趋势图",
     },
     legend: {
       top: '5%',
@@ -24,13 +24,13 @@ onMounted(() => {
     },
     series: [
       {
-        name: 'Starbuck',
+        name: '星巴克',
         data: [820, 932, 901, 934, 1290, 1330, 1320],
         type: 'line',
         smooth: true
       },
       {
-        name: 'Luckin Coffee',
+        name: '瑞幸咖啡',
         data: [1002, 666, 555, 992, 490, 733, 1000],
         type: 'line',
         smooth: true
@@ -39,7 +39,7 @@ onMounted(() => {
   }
   let pieOption = {
     title: {
-      text: "",
+      text: "咖啡销量比例图",
     },
     tooltip: {
       trigger: 'item'
@@ -58,18 +58,18 @@ onMounted(() => {
           show: true,
         },
         data: [
-          { value: 1048, name: 'Starbuck' },
-          { value: 735, name: 'Luckin Coffee' },
-          { value: 580, name: 'Come Wonka' },
-          { value: 484, name: 'MXBC' },
-          { value: 300, name: 'ChaBaiDao' }
+          { value: 1048, name: '星巴克' },
+          { value: 735, name: '瑞幸' },
+          { value: 580, name: '卡旺卡' },
+          { value: 484, name: '蜜雪冰城' },
+          { value: 300, name: '茶百道' }
         ]
       }
     ]
   }
   let myChart = echarts.init(document.getElementById("main"))
   let pieChart = echarts.init(document.getElementById("pie"))
-  // Draw chart
+  // 绘制图表
   myChart.setOption(option)
   pieChart.setOption(pieOption)
 })
@@ -81,25 +81,25 @@ onMounted(() => {
       <el-row :gutter="10">
         <el-col :span="6">
           <el-card style="height: 100px;">
-            <div style="color: #888">user amount</div>
+            <div style="color: #888">用户数量</div>
             <div style="font-size: 24px; font-weight: bold">100</div>
           </el-card>
         </el-col>
         <el-col :span="6">
           <el-card style="height: 100px;">
-            <div style="color: #888">item amount</div>
+            <div style="color: #888">商品数量</div>
             <div style="font-size: 24px; font-weight: bold">666666</div>
           </el-card>
         </el-col>
         <el-col :span="6">
           <el-card style="height: 100px;">
-            <div style="color: #888">order amount</div>
+            <div style="color: #888">订单数量</div>
             <div style="font-size: 24px; font-weight: bold">9999</div>
           </el-card>
         </el-col>
         <el-col :span="6">
           <el-card style="height: 100px;">
-            <div style="color: #888">shop amount</div>
+            <div style="color: #888">门店数量</div>
             <div style="font-size: 24px; font-weight: bold">888</div>
           </el-card>
         </el-col>

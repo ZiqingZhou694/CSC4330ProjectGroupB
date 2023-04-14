@@ -16,6 +16,7 @@ import com.example.springboot.entity.User;
 import com.example.springboot.exception.ServiceException;
 import com.example.springboot.service.IAppointmentService;
 import com.example.springboot.service.IAvailabilityService;
+import com.example.springboot.service.IUserService;
 import com.example.springboot.utils.SessionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,8 @@ public class AppointmentController {
 
     @Resource
     private IAvailabilityService availabilityService;
+    @Resource
+    private IUserService userService;
 
     @AutoLog("Add Appointment")
     @PostMapping
@@ -56,10 +59,17 @@ public class AppointmentController {
         if(!Objects.isNull(appointment1)){
             throw new ServiceException("you already book this appointment!");
         }
+        if(availability.getNums()<1){
+            throw new ServiceException(("sorry the number of appointments is full"));
+        }
+
+        availability.setNumsLeft(availability.getNumsLeft() - 1);
+        availabilityService.updateById(availability);
 
         appointment.setUserId(user.getId());
         appointment.setTime(DateUtil.now());
         appointment.setTutorId(availability.getTutorId());
+        appointment.setSubject(availability.getSubject());
 //        User user = SessionUtils.getUser();
 //        appointment.setUser(user.getName());
 //        appointment.setUserid(user.getId());
@@ -81,10 +91,12 @@ public class AppointmentController {
     @DeleteMapping("/{id}")
     @SaCheckPermission("appointment.cancel")
     public Result delete(@PathVariable Integer id) {
+        //restore the nums
         // cancel the appointment
         Appointment appointment = appointmentService.getById(id);
-//        Integer availabilityId = appointment.getAvailabilityId();
+        Integer availabilityId = appointment.getAvailabilityId();
         Availability availability = availabilityService.getById(appointment.getAvailabilityId());
+        availability.setNumsLeft(availability.getNumsLeft() +1);
         availabilityService.updateById(availability);
         appointmentService.removeById(id);
         return Result.success();
@@ -112,11 +124,11 @@ public class AppointmentController {
 
     @GetMapping("/page")
     @SaCheckPermission("appointment.list")
-    public Result findPage(@RequestParam(defaultValue = "") String name,
+    public Result findPage(@RequestParam(defaultValue = "") String subject,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Appointment> queryWrapper = new QueryWrapper<Appointment>().orderByDesc("id");
-        queryWrapper.like(!"".equals(name), "name", name);
+        queryWrapper.like(!"".equals(subject), "subject", subject);
         //let appointment show by user's id
         User user = SessionUtils.getUser();
         // for student
@@ -128,7 +140,15 @@ public class AppointmentController {
             queryWrapper.eq("tutor_id", user.getId());
         }
 
-        return Result.success(appointmentService.page(new Page<>(pageNum, pageSize), queryWrapper));
+        Page<Appointment> page =appointmentService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        List<Appointment> records = page.getRecords();
+        for(Appointment record : records){
+            record.setAvailability(availabilityService.getById(record.getAvailabilityId()));
+            record.setUser(userService.getById(record.getUserId()));
+        }
+
+
+        return Result.success(page);
     }
 
 

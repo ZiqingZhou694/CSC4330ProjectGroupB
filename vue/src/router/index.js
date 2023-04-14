@@ -7,6 +7,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      // name: 'index',
+      // component: () => import('../views/index.vue')
       name: 'Layout',
       redirect: '/home',
       component: () => import('../layout/Layout.vue'),
@@ -16,6 +18,17 @@ const router = createRouter({
         { path: 'password', name: 'Password', component: () => import('../views/Password.vue') },
       ]
     },
+    // {
+    //   path: '/home',
+    //   name: 'Layout',
+    //   // redirect: '/home',
+    //   component: () => import('../layout/Layout.vue'),
+    //   children: [
+    //     { path: 'home', name: 'Home', component: () => import('../views/Home.vue') },
+    //     { path: 'person', name: 'Person', component: () => import('../views/Person.vue') },
+    //     { path: 'password', name: 'Password', component: () => import('../views/Password.vue') },
+    //   ]
+    // },
     {
       path: '/login',
       name: 'Login',
@@ -30,11 +43,16 @@ const router = createRouter({
       path: '/404',
       name: '404',
       component: () => import('../views/404.vue')
+    },
+    {
+      path: '/index',
+      name: 'index',
+      component: () => import('../views/index.vue')
     }
   ]
 })
 
-// Note: Refreshing the page causes the page route to be reset
+// 注意：刷新页面会导致页面路由重置
 export const setRoutes = (menus) => {
   if (!menus || !menus.length) {
     const manager = localStorage.getItem('manager')
@@ -45,9 +63,9 @@ export const setRoutes = (menus) => {
   }
 
   if (menus.length) {
-    // Start rendering; user-added routes
-    menus.forEach(item => {   // All pages need to be routed, while directories do not need to set up routes
-      if (item.path) {  // Set the route if and only if the path is not empty
+    // 开始渲染 未来的不确定的  用户添加的路由
+    menus.forEach(item => {   // 所有的页面都需要设置路由，而目录不需要设置路由
+      if (item.path) {  // 当且仅当path不为空的时候才去设置路由
         router.addRoute('Layout', { path: item.path, name: item.page, component: modules['../views/' + item.page + '.vue'] })
       } else {
         if (item.children && item.children.length) {
@@ -65,17 +83,15 @@ export const setRoutes = (menus) => {
 setRoutes()
 
 
-// Route guard
+// 路由守卫
 router.beforeEach((to, from, next) => {
-  const store = useUserStore()  // Get user object information
+  const store = useUserStore()  // 拿到用户对象信息
   const user = store.managerInfo.user
   const hasUser = user && user.id
-  const noPermissionPaths = ['/login', '/register', '/404']   // Define routes that do not require login
-  // 用户没登录,  假如你当前跳转login页面，然后login页面没有用户信息，这个时候你再去往 login页面跳转，就会发生无限循环跳转
-  //The user is not logged in, so if you go to the login page right now, then the login page doesn't have the user information. At this time you go to the login page jump, there will be an infinite loop jump
-  if (!hasUser && !noPermissionPaths.includes(to.path)) {
-    // get cashed user data
-    //  if to.path === '/login'    !noPermissionPaths.includes(to.path) return false，will not run next("/login")
+  const noPermissionPaths = ['/login', '/register', '/404']   // 定义无需登录的路由
+  if (!hasUser && !noPermissionPaths.includes(to.path)) {  // 用户没登录,  假如你当前跳转login页面，然后login页面没有用户信息，这个时候你再去往 login页面跳转，就会发生无限循环跳转
+    // 获取缓存的用户数据
+    //  如果to.path === '/login' 的时候   !noPermissionPaths.includes(to.path) 是返回 false的，也就不会进 next("/login")
     next("/login")
   } else {
     if (!to.matched.length) {

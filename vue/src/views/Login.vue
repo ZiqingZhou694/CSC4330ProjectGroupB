@@ -5,29 +5,7 @@ import request from "@/utils/request";
 import {ElMessage} from "element-plus";
 import {useUserStore} from "@/stores/user";
 import router, {setRoutes} from "@/router";
-// import SIdentify from '../components/Sidentify.vue';
 
-// Captcha
-// let identifyCodes = "1234567890"
-// let identifyCode = ref('')
-// const failCount = ref(0)
-// const randomNum = (min, max) => {
-//   return Math.floor(Math.random() * (max - min) + min)
-// }
-// const makeCode = (o, l) => {
-//   for (let i = 0; i < l; i++) {
-//     identifyCode.value += o[randomNum(0, o.length)];
-//   }
-// }
-// const refreshCode = () => {
-//   identifyCode.value = "";
-//   makeCode(identifyCodes, 4);
-// }
-// // Generate verification code
-// onMounted(() => {
-//   identifyCode.value = "";
-//   makeCode(identifyCodes, 4);
-// })
 
 const loginData = reactive({})
 const rules = reactive({
@@ -42,13 +20,7 @@ const rules = reactive({
 const ruleFormRef = ref()
 const login = () => {
   ruleFormRef.value.validate(valid => {
-    // if (valid) {
-    //   // fail three time to trigger verification code
-    //   if (failCount.value >= 3 && loginData.code !== identifyCode.value) {
-    //     ElMessage.warning('incorrect verification code')
-    //     return
-    //   }
-      // send chart to the back
+      // 发送表单数据给后台
       request.post('/login', loginData).then(res => {
         if (res.code === '200') {
           ElMessage.success('login success')
@@ -57,7 +29,6 @@ const login = () => {
           router.push('/')
         } else {
           ElMessage.error(res.msg)
-          failCount.value ++  // fail count + 1
         }
       })
     // }

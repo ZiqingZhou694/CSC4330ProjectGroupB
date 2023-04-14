@@ -11,7 +11,7 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// delete by Selection
+// 批量删除
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -25,7 +25,7 @@ const confirmDelBatch = () => {
   request.post('/permission/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('Success')
-      load()  // Refresh the data of table
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
@@ -37,7 +37,7 @@ const load = () => {
     state.tableData = res.data
   })
 }
-load()  //  Call load() to get the backend data
+load()  // 调用 load方法拿到后台数据
 
 const dialogFormVisible = ref(false)
 
@@ -48,25 +48,25 @@ const rules = reactive({
 })
 const ruleFormRef = ref()
 
-// add
+// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = { type: 1, orders: 1 }
 
-    // Add this request here, and show no data when adding a new permission
-    // A collection of data for the icon was requested
+    // 把这个请求加在这里，解决了加新的permission的时候显示no data
+    // 请求了icon的数据集合
     request.get('/dict/icons').then(res => {
       icons.value = res.data
     })
   })
 }
 
-// save
+// 保存
 const save = () => {
 
-  ruleFormRef.value.validate(valid => {   // check if the result is valid
+  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
     if (valid) {
       request.request({
         url: '/permission',
@@ -76,7 +76,7 @@ const save = () => {
         if (res.code === '200') {
           ElMessage.success('Save Success')
           dialogFormVisible.value = false
-          load()  // Refresh the data of table
+          load()  // 刷新表格数据
         } else {
           ElMessage.error(res.msg)
         }
@@ -93,30 +93,30 @@ const changeHide = (row) => {
   }).then(res => {
     if (res.code === '200') {
       ElMessage.success('Success')
-      load()  // Refresh the data of table
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-// the collection of icon
+// 图标字典集合
 const icons = ref([])
-// edit
+// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = JSON.parse(JSON.stringify(raw))
 
-    // A collection of data for the icon was requested
+    // 请求了icon的数据集合
     request.get('/dict/icons').then(res => {
       icons.value = res.data
     })
   })
 }
 
-// //Deletes the data with the specified ID from the array and gets the new array
+// 从数组里删除指定id的数据，获取新的数组
 // const getTreeArr = (raw) => {
 //   state.tree = JSON.parse(JSON.stringify(state.tableData))
 //   if (raw) {
@@ -125,19 +125,19 @@ const handleEdit = (raw) => {
 //   }
 // }
 
-// delete
+// 删除
 const del = (id) => {
   request.delete('/permission/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('Success')
-      load()  // Refresh the data of table
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-//  Export the interface
+// 导出接口
 const exportData = () => {
   window.open(`http://${config.serverUrl}/permission/export`)
 }
@@ -147,19 +147,18 @@ const token = userStore.getBearerToken
 const auths =  userStore.getAuths
 
 const handleImportSuccess = () => {
-  // Refresh the data of table
+  // 刷新表格
   load()
   ElMessage.success("Import Success")
 }
 
 const handleNodeClick = (data) => {
-  // If the id of the current edit line is the same as the ID of the selected parent node, he will not be allowed to select it
-  if (data.id === state.form.id) {
+  if (data.id === state.form.id) {  // 当前编辑行的id跟选择的父节点的id如果相同的话，就不让他选择
     console.log(data)
     ElMessage.warning("Can't choose parent itself")
 
-    nextTick(() => {  // Wait for the DOM rendering of the tree node before modifying the PID
-      // reset pid
+    nextTick(() => {  // 等树节点的dom渲染完之后再去修改pid
+      // 重置pid
       state.form.pid = null
       console.log(state.form)
     })
@@ -175,12 +174,12 @@ const handleNodeClick = (data) => {
           <Plus />
         </el-icon>  <span style="vertical-align: middle"> Add </span>
       </el-button>
-<!--      <el-popconfirm title="delete?" @confirm="confirmDelBatch" v-if="auths.includes('permission.deleteBatch')">-->
+<!--      <el-popconfirm title="您确定删除吗？" @confirm="confirmDelBatch" v-if="auths.includes('permission.deleteBatch')">-->
 <!--        <template #reference>-->
 <!--          <el-button type="danger" style="margin-left: 5px">-->
 <!--            <el-icon style="vertical-align: middle">-->
 <!--              <Remove />-->
-<!--            </el-icon>  <span style="vertical-align: middle"> multiple deletion </span>-->
+<!--            </el-icon>  <span style="vertical-align: middle"> 批量删除 </span>-->
 <!--          </el-button>-->
 <!--        </template>-->
 <!--      </el-popconfirm>-->

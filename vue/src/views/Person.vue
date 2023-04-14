@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, defineEmits} from "vue";
+import {reactive, defineEmits, ref} from "vue";
 import request from "@/utils/request";
 import {ElMessage} from "element-plus";
 import config from "../../config";
@@ -9,6 +9,7 @@ const userStore = useUserStore()
 const user = userStore.getUser
 const token = userStore.getBearerToken
 
+const Hidden = ref(true)
 const state = reactive({
   form: {}
 })
@@ -20,6 +21,11 @@ const handleImportSuccess = (res) => {
 
 let $myEmit = defineEmits(['getAvatar'])
 const save = () => {
+  // if(user.role ==="TUTOR"){
+  //   Hidden.value = true
+  // }else{
+  //   Hidden.value = false
+  // }
   request.put("/updateUser", state.form).then(res => {
     if (res.code === '200') {
       ElMessage.success('update success')
@@ -28,6 +34,7 @@ const save = () => {
     } else {
       ElMessage.error(res.msg)
     }
+
   })
 }
 </script>
@@ -63,6 +70,9 @@ const save = () => {
         </el-form-item>
         <el-form-item label="Address" label-width="formLabelWidth">
           <el-input v-model="state.form.address"></el-input>
+        </el-form-item>
+        <el-form-item label="Content" label-width="formLabelWidth" v-show="user.role !== 'STUDENT'">
+          <el-input type="textarea" v-model="state.form.content"  style=" height:120px ;"></el-input>
         </el-form-item>
       </el-form>
       <div style="text-align: center; width: 100%">

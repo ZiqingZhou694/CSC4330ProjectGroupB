@@ -64,4 +64,7 @@ private static final long serialVersionUID = 1L;
     @ApiModelProperty("status")
     @Alias("status")
     private String status;
+
+    private Integer nums;
+    private Integer numsLeft;
 }

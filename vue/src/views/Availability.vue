@@ -12,6 +12,8 @@ const pageNum = ref(1)
 const pageSize = ref(5)
 const total = ref(0)
 
+
+
 const userStore = useUserStore()
 let user = userStore.getUser
 const token = userStore.getBearerToken
@@ -19,19 +21,22 @@ const auths =  userStore.getAuths
 
 const state = reactive({
   tableData: [],
-  form: {}
+  form: {},
+  rating: {},
+  comments: []
 })
 state.form = Object.assign({}, user)
-const valueHtml = ref('')  
-// information
+const valueHtml = ref('')  // 富文本内容
 
 // state.tutorOptions = []
 // request.get('/tutor').then(res => state.tutorOptions = res.data)
+state.userOptions = []
+request.get('/user').then(res => state.userOptions = res.data)
 
 
 const multipleSelection = ref([])
 
-// deletion
+// 批量删除
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -45,8 +50,7 @@ const confirmDelBatch = () => {
   request.post('/availability/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  
-      // refresh all data
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
@@ -54,6 +58,7 @@ const confirmDelBatch = () => {
 }
 
 const load = () => {
+  const Search = `${name.value}|||${subject.value}`;
   request.get('/availability/page', {
     params: {
       name: name.value,
@@ -66,7 +71,7 @@ const load = () => {
     total.value = res.data.total
   })
 }
-load()  // use load method to get background data
+load()  // 调用 load方法拿到后台数据
 
 const reset = () => {
   name.value = ''
@@ -94,6 +99,9 @@ const rules = reactive({
   subject: [
     { required: true, message: 'please enter subject', trigger: 'blur' },
   ],
+  nums: [
+    { required: true, message: 'please enter total schedule number', trigger: 'blur' },
+  ],
   // tutorId: [
   //   { required: true, message: "please enter the tutor's Id", trigger: 'blur' },
   //   // { required: true, message: "please enter number only", type: 'number'}
@@ -102,7 +110,7 @@ const rules = reactive({
 
 const ruleFormRef = ref()
 
-// New
+// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   if(user.role ==="ADMIN"){
@@ -113,24 +121,24 @@ const handleAdd = () => {
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = {}
-    valueHtml.value = ''  // information
+    valueHtml.value = ''  // 富文本
   })
 }
 
-// Save
+// 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid is the result
+  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
     if (valid) {
-      state.form.content = valueHtml.value  // save information
+      state.form.content = valueHtml.value  // 富文本保存内容
       request.request({
         url: '/availability',
         method: state.form.id ? 'put' : 'post',
         data: state.form
       }).then(res => {
         if (res.code === '200') {
-          ElMessage.success('save successfully')
+          ElMessage.success('保存成功')
           dialogFormVisible.value = false
-          load()  // refresh data
+          load()  // 刷新表格数据
         } else {
           ElMessage.error(res.msg)
         }
@@ -139,43 +147,61 @@ const save = () => {
   })
 }
 
-// edit
+// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = JSON.parse(JSON.stringify(raw))
-    valueHtml.value = raw.content  // raw data
+    valueHtml.value = raw.content  // 富文本
   })
 }
 
-// deletion
+// 删除
 const del = (id) => {
   request.delete('/availability/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // refresh data
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
+// 导出接口 这些没必要
+// const exportData = () => {
+//   window.open(`http://${config.serverUrl}/availability/export`)
+// }
+//
+//
+// const handleImportSuccess = () => {
+//   // 刷新表格
+//   load()
+//   ElMessage.success("Import success")
+// }
+//
+// const handleFileUploadSuccess = (res) => {
+//   state.form.file = res.data
+//   ElMessage.success('upload success')
+// }
 
-const handleImgUploadSuccess = (res) => {
-  state.form.img = res.data
-  ElMessage.success('image upload success')
-}
-// open schedule tab
-const scheduleDialogVisible = ref(false)
-const handleSchedule = (row) =>{
-  scheduleDialogVisible.value = true
-  state.form.startTime = row.startTime
-  state.form.endTime = row.endTime
-
-}
+// // 如果 view 想显示tutor头像可以用 或者用其他方法
+// //方法还没确定
+// const handleImgUploadSuccess = (res) => {
+//   state.form.img = res.data
+//   ElMessage.success('image upload success')
+// }
+// 这里是 schedule弹窗的脚本
+// const scheduleDialogVisible = ref(false)
+// const handleSchedule = (row) =>{
+//   scheduleDialogVisible.value = true
+//   state.form.startTime = row.startTime
+//   state.form.endTime = row.endTime
+//
+// }
 const handleScheduleSave = (row) =>{
-  scheduleDialogVisible.value = false
+  // scheduleDialogVisible.value = false
   request.post('/appointment', {availabilityId: row.id}).then(res => {
     if(res.code === '200'){
       ElMessage.success('success')
@@ -185,12 +211,40 @@ const handleScheduleSave = (row) =>{
     }
   })
 }
-// view tab
+
+// view 的弹窗脚本
 const viewDialogVisible = ref(false)
-// need this handle view to get the tab open
+// 这个handle 要有不然弹窗打不开
 const handleView = (row) =>{
   viewDialogVisible.value = true
+  nextTick(() => {
+    state.form = JSON.parse(JSON.stringify(row))
+    valueHtml.value = row.content  // 富文本
+    load()
+    loadRating(row.tutorId)
+    state.userOptions = []
+    request.get('/user').then(res => state.userOptions = res.data)
+  })
 }
+//comment dialog
+const commentDialogVisible =ref(false)
+const handleComment = (row) =>{
+  commentDialogVisible .value = true
+}
+
+//rating
+// const value = ref()
+const colors = ['#99A9BF', '#F7BA2A', '#FF9900']
+const loadRating = async (foreignId) => {
+  try {
+    const res = await request.get('/comment?foreignId=' + foreignId)
+    state.rating.rate = res.rate
+    state.comments = res.comments
+  } catch (error) {
+    ElMessage.error('Failed to load rating data')
+  }
+}
+// nums to book
 
 
 </script>
@@ -199,6 +253,7 @@ const handleView = (row) =>{
   <div>
     <div>
       <el-input v-model="subject" placeholder="Subject" class="w300" />
+      <el-input v-model="name" placeholder="Tutor" class="w300" />
       <el-button type="primary" class="ml5" @click="load">
         <el-icon style="vertical-align: middle">
           <Search />
@@ -230,20 +285,20 @@ const handleView = (row) =>{
 <!--        <el-button type="primary">-->
 <!--          <el-icon style="vertical-align: middle">-->
 <!--            <Bottom />-->
-<!--          </el-icon>  <span style="vertical-align: middle"> import </span>-->
+<!--          </el-icon>  <span style="vertical-align: middle"> 导入 </span>-->
 <!--        </el-button>-->
 <!--      </el-upload>-->
 <!--      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('availability.export')">-->
 <!--        <el-icon style="vertical-align: middle">-->
 <!--          <Top />-->
-<!--        </el-icon>  <span style="vertical-align: middle"> export </span>-->
+<!--        </el-icon>  <span style="vertical-align: middle"> 导出 </span>-->
 <!--      </el-button>-->
-<!--      <el-popconfirm title="You sure you want to delete" @confirm="confirmDelBatch" v-if="auths.includes('availability.deleteBatch')">-->
+<!--      <el-popconfirm title="您确定删除吗？" @confirm="confirmDelBatch" v-if="auths.includes('availability.deleteBatch')">-->
 <!--        <template #reference>-->
 <!--          <el-button type="danger" style="margin-left: 5px">-->
 <!--            <el-icon style="vertical-align: middle">-->
 <!--              <Remove />-->
-<!--            </el-icon>  <span style="vertical-align: middle"> sectional delete </span>-->
+<!--            </el-icon>  <span style="vertical-align: middle"> 批量删除 </span>-->
 <!--          </el-button>-->
 <!--        </template>-->
 <!--      </el-popconfirm>-->
@@ -252,16 +307,27 @@ const handleView = (row) =>{
     <div style="margin: 10px 0">
       <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" label="Id"></el-table-column>
+        <el-table-column prop="id" label="Id" ></el-table-column>
         <el-table-column prop="date" label="date"></el-table-column>
-        <el-table-column width="180" prop="name" label="tutor name"></el-table-column>
+        <el-table-column width="150" prop="name" label="tutor name"></el-table-column>
         <el-table-column prop="subject" label="subject"></el-table-column>
         <el-table-column prop="startTime" label="start time"></el-table-column>
         <el-table-column prop="endTime" label="end time"></el-table-column>
-        <el-table-column prop="tutorId" label="Tutor Id"></el-table-column>
+        <el-table-column prop="tutorId" label="Tutor Id" v-if="user.role ==='ADMIN' || (user.role === 'TUTOR')"  ></el-table-column>
 <!--        <el-table-column label="tutor "><template #default="scope"><span v-if="scope.row.tutorId">{{ state.tutorOptions.find(v => v.id === scope.row.tutorId) ? state.tutorOptions.find(v => v.id === scope.row.tutorId).name : '' }}</span></template></el-table-column>-->
       <el-table-column prop="virtualLink" label="link"></el-table-column>
-        <el-table-column prop="status" label="status" v-if="auths.includes('availability.status')"></el-table-column>
+        <el-table-column  width="70" label="nums">
+          <template #default = "scope">
+            {{scope.row.numsLeft}} / {{scope.row.nums}}
+          </template>
+        </el-table-column>
+<!--        <el-table-column prop="numsLeft" width="100" label="nums Left"></el-table-column>-->
+        <el-table-column prop="status" label="status" v-if="auths.includes('availability.status')">
+          <template #default = "scope">
+            <el-tag v-if="scope.row.status === 'Available'" type="success">Available</el-tag>
+            <el-tag v-if="scope.row.status === 'Expired'" type="danger">Expired</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="View Tutor" width="120" v-if="auths.includes('availability.schedule')">
           <template #default="scope">
             <el-button type="primary" @click="handleView(scope.row)" >view</el-button>
@@ -269,7 +335,7 @@ const handleView = (row) =>{
         </el-table-column>
         <el-table-column label="Appointment" width="120"  v-if="auths.includes('availability.schedule')">
           <template #default="scope">
-            <el-button type="primary" @click="handleSchedule(scope.row)" >schedule</el-button>
+            <el-button type="primary" @click="handleScheduleSave(scope.row)" >schedule</el-button>
           </template>
         </el-table-column>
         <el-table-column label="action" width="180" v-if="auths.includes('availability.action')">
@@ -292,8 +358,8 @@ const handleView = (row) =>{
           v-model:current-page="pageNum"
           v-model:page-size="pageSize"
           background
-          :page-sizes="[2, 5, 10, 20]"
-          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="10"
+          layout="total, prev, pager, next, jumper"
           :total="total"
       />
     </div>
@@ -324,11 +390,17 @@ const handleView = (row) =>{
 <!--          </el-select>-->
           <el-input v-model="state.form.tutorId" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item prop="nums" label="nums">
+          <el-input v-model="state.form.nums" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item prop="numsLeft" label="nums left" v-if="state.form.id">
+          <el-input v-model="state.form.numsLeft" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item prop="virtualLink" label="Link">
           <el-input v-model="state.form.virtualLink" autocomplete="off"></el-input>
         </el-form-item>
-
       </el-form>
+
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">Cancel</el-button>
@@ -339,33 +411,66 @@ const handleView = (row) =>{
       </template>
     </el-dialog>
 
-    <!--schedule-->
-    <el-dialog v-model="scheduleDialogVisible" title="Schedule" width="30%">
-      <!-- do schedule pop dialog in here -->
-      <el-form>
-<!--        <el-form-item label="Date" prop="date">-->
-<!--          <el-date-picker v-model="scheduleForm.date" type="date" placeholder="Pick a date"></el-date-picker>-->
+    <!--schedule 的弹窗 -->
+<!--    <el-dialog v-model="scheduleDialogVisible" title="Schedule" width="30%">-->
+<!--      &lt;!&ndash; do schedule pop dialog in here &ndash;&gt;-->
+<!--      <el-form>-->
+<!--&lt;!&ndash;        <el-form-item label="Date" prop="date">&ndash;&gt;-->
+<!--&lt;!&ndash;          <el-date-picker v-model="scheduleForm.date" type="date" placeholder="Pick a date"></el-date-picker>&ndash;&gt;-->
+<!--&lt;!&ndash;        </el-form-item>&ndash;&gt;-->
+<!--        <el-form-item label="Start Time" prop="startTime">-->
+<!--          <el-time-select v-model="state.form.startTime" start="06:00" step="01:00" end="23:59" :max-time="state.form.endTime" :min-time="state.form.startTime" placeholder="Pick a time"></el-time-select>-->
 <!--        </el-form-item>-->
-        <el-form-item label="Start Time" prop="startTime">
-          <el-time-select v-model="state.form.startTime" start="06:00" step="01:00" end="23:59" :max-time="state.form.endTime" :min-time="state.form.startTime" placeholder="Pick a time"></el-time-select>
-        </el-form-item>
-        <el-form-item label="End Time" prop="endTime">
-          <el-time-select v-model="state.form.endTime"  start="06:00" step="01:00" end="23:59" :max-time="state.form.endTime" :min-time="state.form.startTime" placeholder="Pick a time"></el-time-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="scheduleDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="handleScheduleSave">Save</el-button>
-      </template>
-      <!--      -->
-    </el-dialog>
+<!--        <el-form-item label="End Time" prop="endTime">-->
+<!--          <el-time-select v-model="state.form.endTime"  start="06:00" step="01:00" end="23:59" :max-time="state.form.endTime" :min-time="state.form.startTime" placeholder="Pick a time"></el-time-select>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <template #footer>-->
+<!--        <el-button @click="scheduleDialogVisible = false">Cancel</el-button>-->
+<!--        <el-button type="primary" @click="handleScheduleSave">Save</el-button>-->
+<!--      </template>-->
+<!--      &lt;!&ndash;      &ndash;&gt;-->
+<!--    </el-dialog>-->
 
 
-    <!--view -->
+    <!--view 的弹窗 -->
     <el-dialog v-model="viewDialogVisible" title="Tutor Info" width="30%">
 <!--      do view pop dialog in here       -->
+<!--                <template #default="scope"><span v-if="scope.row.userId">{{ state.userOptions.find(v => v.id === scope.row.userId) ? state.userOptions.find(v => v.id === scope.row.userId).firstName: '' }}</span></template>-->
+      <el-form :model="state.form" label-width="120px" style="padding: 0 20px">
+
+        <div style="text-align: center; display: flex; justify-content: center; align-items: center; margin-bottom: 20px">
+          <img v-if="state.form.tutorId && (state.userOptions.find(v => v.id === state.form.tutorId) || {}).avatar" :src="(state.userOptions.find(v => v.id === state.form.tutorId) || {}).avatar" class="avatar" />
+
+        </div>
+        <el-form-item label="Tutor Name">
+          <el-input v-model="state.form.name" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="Subject">
+          <el-input v-model="state.form.subject" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="Email">
+          <el-input v-if="state.form.tutorId && (state.userOptions.find(v => v.id === state.form.tutorId) || {}).email" v-model="state.userOptions.find(v => v.id === state.form.tutorId).email" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="About">
+          <el-input type="textarea" v-if="state.form.tutorId && (state.userOptions.find(v => v.id === state.form.tutorId) || {}).content" v-model="state.userOptions.find(v => v.id === state.form.tutorId).content" autocomplete="off" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="Rating">
+          <el-rate
+              v-model="state.rating.rate"
+              :colors="colors"
+              disabled
+              show-score
+              text-color = "#FF9900"
+              score-template="{value}">
+          </el-rate>
+          <el-button type="primary" style="margin-left: 20px;" @click="handleComment">Comment</el-button>
+        </el-form-item>
+
+      </el-form>
 <!--      include the rating here also      -->
 <!--      rating may content backend and database-->
+<!--      下面是按钮 可有可无 看情况而定        -->
 <!--      <template #footer>-->
 <!--        <el-button @click="viewDialogVisible = false">close</el-button>-->
 <!--        <el-button type="primary" @click="handleView">Save</el-button>-->
@@ -373,7 +478,42 @@ const handleView = (row) =>{
       <!--      -->
     </el-dialog>
 
+    <el-dialog v-model="commentDialogVisible" width="800px">
+      <div style="margin: 10px 0; font-size: 24px; padding: 10px 0; border-bottom: 1px solid #ccc;">Comment</div>
+      <div style="margin: 20px 0; text-align: left;  max-height: 400px; overflow-y: auto;">
+        <div style="padding: 10px 0; display: flex;" v-for=" item in state.comments" :key="item.id">
+          <div style="width: 60px"><el-avatar :size="50" :src="(state.userOptions.find(v => v.id === item.userId) || {}).avatar"></el-avatar></div>
+          <div style="flex: 1">
+            <div style="font-weight: bold;">
+              {{ item.username }}
+              <el-rate
+                  v-model="item.rate"
+                  :colors="colors"
+                  disabled>
+              </el-rate></div>
+            <div style="margin-top: 5px; color: #666">{{ item.content }}</div>
+          </div>
+<!--          <span></span>-->
+<!--          <p>Comment 1: Great tutor!</p>-->
+<!--          <p>Comment 2: Very helpful.</p>-->
+<!--          <p>Comment 3: Explains concepts clearly.</p>-->
+        </div>
+      </div>
+    </el-dialog>
+
 
 
   </div>
 </template>
+<style>
+.avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+  border: 1px dashed #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+}
+
+</style>

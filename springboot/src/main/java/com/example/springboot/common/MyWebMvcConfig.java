@@ -18,7 +18,7 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/", "/login", "/register", "/email", "/password/reset", "/file/download/**", "/**/export")
                 .excludePathPatterns("/swagger**/**", "/webjars/**", "/v3/**", "/doc.html", "/favicon.ico");
     }
-
+//
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.

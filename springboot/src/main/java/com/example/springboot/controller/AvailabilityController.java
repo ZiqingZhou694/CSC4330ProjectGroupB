@@ -34,6 +34,7 @@ public class AvailabilityController {
     @SaCheckPermission("availability.add")
     public Result save(@RequestBody Availability availability) {
         User user = SessionUtils.getUser();
+        availability.setNumsLeft(availability.getNums());
         if(availability.getName() == null){
             availability.setName(user.getFirstName() + " " + user.getLastName());
         }
@@ -52,6 +53,7 @@ public class AvailabilityController {
     @PutMapping
     @SaCheckPermission("availability.edit")
     public Result update(@RequestBody Availability availability) {
+//        availability.setNumsLeft(availability.getNums());
         availabilityService.updateById(availability);
         return Result.success();
     }
@@ -100,6 +102,9 @@ public class AvailabilityController {
         }
         //这里写一个 if expired 让student 看不到那些已经过期的预约选项
         //.......
+        if(user.getRole().equals("STUDENT")){
+            queryWrapper.eq("status", "Available");
+        }
         //
         return Result.success(availabilityService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }

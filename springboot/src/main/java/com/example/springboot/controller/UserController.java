@@ -61,13 +61,13 @@ public class UserController {
     }
 
     @GetMapping
-    @SaCheckPermission("user.list")
+//    @SaCheckPermission("user.list")
     public Result findAll() {
         return Result.success(userService.list());
     }
 
     @GetMapping("/{id}")
-    @SaCheckPermission("user.list")
+//    @SaCheckPermission("user.list")
     public Result findOne(@PathVariable Integer id) {
         return Result.success(userService.getById(id));
     }

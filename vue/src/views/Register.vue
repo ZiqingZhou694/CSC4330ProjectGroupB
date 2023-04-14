@@ -42,7 +42,7 @@ import router from "@/router";
   const login = () => {
     ruleFormRef.value.validate(valid => {
       if (valid) {
-          // Send form data to the backend
+          // 发送表单数据给后台
           request.post('/register', RegisterData).then(res => {
             if (res.code === '200') {
               ElMessage.success('register successfully')

@@ -2,16 +2,7 @@
 import {reactive} from "vue";
 import request from "@/utils/request";
 
-// const state = reactive({
-//   notice: []
-// })
 
-// const load = () => {
-//   request.get("/notice").then(res => {
-//     state.notice = res.data
-//   })
-// }
-// load()
 </script>
 
 <template>

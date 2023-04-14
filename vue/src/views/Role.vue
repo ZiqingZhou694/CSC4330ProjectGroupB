@@ -22,7 +22,7 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// multiple deletion
+// 批量删除
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -36,7 +36,7 @@ const confirmDelBatch = () => {
   request.post('/role/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('successs')
-      load()  // Refresh the data in table
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
@@ -59,7 +59,7 @@ const load = () => {
     state.treeData = res.data
   })
 }
-load()  // Call load() to get the backend data
+load()  // 调用 load方法拿到后台数据
 
 const reset = () => {
   name.value = ''
@@ -78,7 +78,7 @@ const rules = reactive({
 })
 const ruleFormRef = ref()
 
-// add
+// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -87,13 +87,13 @@ const handleAdd = () => {
   })
 }
 
-// save
+// 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // check if the result is valid
+  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
     if (valid) {
-      // The menu node that is currently selected
+      // 目前被选中的菜单节点
       let checkedKeys = permissionTreeRef.value.getCheckedKeys();
-      // The half-selected menu node
+      // 半选中的菜单节点
       let halfCheckedKeys = permissionTreeRef.value.getHalfCheckedKeys();
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
 
@@ -106,7 +106,7 @@ const save = () => {
         if (res.code === '200') {
           ElMessage.success('Save success')
           dialogFormVisible.value = false
-          load()  // Refresh the data of table
+          load()  // 刷新表格数据
           if (state.form.flag === 'ADMIN') {
             logout()
           }
@@ -118,44 +118,44 @@ const save = () => {
   })
 }
 
-// edit
+// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = JSON.parse(JSON.stringify(raw))
 
-    permissionTreeRef.value.setCheckedKeys([])  // Clear the selected nodes first
+    permissionTreeRef.value.setCheckedKeys([])  // 先清除选中的节点
     raw.permissionIds.forEach(v => {
-      permissionTreeRef.value.setChecked(v, true, false)  // Set the selected node to the permission tree
+      permissionTreeRef.value.setChecked(v, true, false)  // 给权限树设置选中的节点
     })
   })
 }
 
-// delete
+// 删除
 const del = (id) => {
   request.delete('/role/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // Refresh the data of table
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-// Export the interface
-const exportData = () => {
-  window.open(`http://${config.serverUrl}/role/export`)
-}
+// // 导出接口
+// const exportData = () => {
+//   window.open(`http://${config.serverUrl}/role/export`)
+// }
 
 
 
-const handleImportSuccess = () => {
-  // Refresh table
-  load()
-  ElMessage.success("import success")
-}
+// const handleImportSuccess = () => {
+//   // 刷新表格
+//   load()
+//   ElMessage.success("import success")
+// }
 
 
 const logout = () => {
@@ -250,8 +250,8 @@ const logout = () => {
           v-model:current-page="pageNum"
           v-model:page-size="pageSize"
           background
-          :page-sizes="[2, 5, 10, 20]"
-          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="10"
+          layout="total, prev, pager, next, jumper"
           :total="total"
       />
     </div>

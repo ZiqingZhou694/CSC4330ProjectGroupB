@@ -18,7 +18,7 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// multiple deletion
+// 批量删除
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -32,7 +32,7 @@ const confirmDelBatch = () => {
   request.post('/user/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // Refresh the data of table
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
@@ -56,7 +56,7 @@ const load = () => {
     roles.value = res.data
   })
 }
-load()  // Call load() to get the backend data
+load()  // 调用 load方法拿到后台数据
 
 const reset = () => {
   lastName.value = ''
@@ -89,16 +89,16 @@ const rules = reactive({
 })
 const ruleFormRef = ref()
 
-// add
+// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   ruleFormRef.value.resetFields()
   state.form = {}
 }
 
-// save
+// 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // check if the result is valid
+  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
     if (valid) {
       request.request({
         url: '/user',
@@ -108,7 +108,7 @@ const save = () => {
         if (res.code === '200') {
           ElMessage.success('save success')
           dialogFormVisible.value = false
-          load()  // Refresh the data of table
+          load()  // 刷新表格数据
         } else {
           ElMessage.error(res.msg)
         }
@@ -117,7 +117,7 @@ const save = () => {
   })
 }
 
-// edit
+// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -126,19 +126,19 @@ const handleEdit = (raw) => {
   })
 }
 
-// delete
+// 删除
 const del = (id) => {
   request.delete('/user/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // Refresh the data of table
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-// Export the interface
+// 导出接口
 const exportData = () => {
   window.open(`http://${config.serverUrl}/user/export`)
 }
@@ -148,7 +148,7 @@ const token = userStore.getBearerToken
 const auths = userStore.getAuths
 
 const handleImportSuccess = () => {
-  // Refresh table
+  // 刷新表格
   load()
   ElMessage.success("import success")
 }
@@ -245,8 +245,8 @@ const handleImportSuccess = () => {
           v-model:current-page="pageNum"
           v-model:page-size="pageSize"
           background
-          :page-sizes="[2, 5, 10, 20]"
-          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="10"
+          layout="total, prev, pager, next, jumper"
           :total="total"
       />
     </div>

@@ -16,7 +16,7 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// delete
+// 批量删除
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -29,8 +29,8 @@ const confirmDelBatch = () => {
   const idArr = multipleSelection.value.map(v => v.id)
   request.post('/dict/del/batch', idArr).then(res => {
     if (res.code === '200') {
-      ElMessage.success('success')
-      load()  // refresh chart
+      ElMessage.success('操作成功')
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
@@ -49,7 +49,7 @@ const load = () => {
     total.value = res.data.total
   })
 }
-load()  // switch load method to get backstage data
+load()  // 调用 load方法拿到后台数据
 
 const reset = () => {
   name.value = ''
@@ -60,12 +60,12 @@ const dialogFormVisible = ref(false)
 
 const rules = reactive({
   name: [
-    { required: true, message: 'Please enter name', trigger: 'blur' },
+    { required: true, message: '请输入名称', trigger: 'blur' },
   ]
 })
 const ruleFormRef = ref()
 
-// New
+// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -76,7 +76,7 @@ const handleAdd = () => {
 
 // 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid is check the result
+  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
     if (valid) {
       request.request({
         url: '/dict',
@@ -84,9 +84,9 @@ const save = () => {
         data: state.form
       }).then(res => {
         if (res.code === '200') {
-          ElMessage.success('success saved')
+          ElMessage.success('保存成功')
           dialogFormVisible.value = false
-          load()  // refresh the chart data
+          load()  // 刷新表格数据
         } else {
           ElMessage.error(res.msg)
         }
@@ -95,7 +95,7 @@ const save = () => {
   })
 }
 
-// edit
+// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -104,38 +104,38 @@ const handleEdit = (raw) => {
   })
 }
 
-// delete
+// 删除
 const del = (id) => {
   request.delete('/dict/' + id).then(res => {
     if (res.code === '200') {
-      ElMessage.success('success')
-      load()  // refresh the chart data
+      ElMessage.success('操作成功')
+      load()  // 刷新表格数据
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-// export
-const exportData = () => {
-  window.open(`http://${config.serverUrl}/dict/export`)
-}
+// // 导出接口
+// const exportData = () => {
+//   window.open(`http://${config.serverUrl}/dict/export`)
+// }
 
 const userStore = useUserStore()
 const token = userStore.getBearerToken
 const auths =  userStore.getAuths
 
-const handleImportSuccess = () => {
-  // refresh the data
-  load()
-  ElMessage.success("import success")
-}
+// const handleImportSuccess = () => {
+//   // 刷新表格
+//   load()
+//   ElMessage.success("导入成功")
+// }
 </script>
 
 <template>
   <div>
     <div>
-      <el-input v-model="name" placeholder="enter your name" class="w300" />
+      <el-input v-model="name" placeholder="Enter key" class="w300" />
       <el-button type="primary" class="ml5" @click="load">
         <el-icon style="vertical-align: middle">
           <Search />
@@ -144,7 +144,7 @@ const handleImportSuccess = () => {
       <el-button type="warning" class="ml5" @click="reset">
         <el-icon style="vertical-align: middle">
           <RefreshLeft />
-        </el-icon>  <span style="vertical-align: middle"> reset </span>
+        </el-icon>  <span style="vertical-align: middle"> Reset </span>
       </el-button>
 
     </div>
@@ -155,32 +155,32 @@ const handleImportSuccess = () => {
           <Plus />
         </el-icon>  <span style="vertical-align: middle"> Add </span>
       </el-button>
-      <el-upload
-          v-if="auths.includes('dict.import')"
-          class="ml5"
-          :show-file-list="false"
-          style="display: inline-block; position: relative; top: 3px"
-          :action='`http://${config.serverUrl}/dict/import`'
-          :on-success="handleImportSuccess"
-          :headers="{ Authorization: token}"
-      >
-        <el-button type="primary">
-          <el-icon style="vertical-align: middle">
-            <Bottom />
-          </el-icon>  <span style="vertical-align: middle"> import </span>
-        </el-button>
-      </el-upload>
-      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('dict.export')">
-        <el-icon style="vertical-align: middle">
-          <Top />
-        </el-icon>  <span style="vertical-align: middle"> export </span>
-      </el-button>
-      <el-popconfirm title="You sure you want to delete?" @confirm="confirmDelBatch" v-if="auths.includes('dict.deleteBatch')">
+<!--      <el-upload-->
+<!--          v-if="auths.includes('dict.import')"-->
+<!--          class="ml5"-->
+<!--          :show-file-list="false"-->
+<!--          style="display: inline-block; position: relative; top: 3px"-->
+<!--          :action='`http://${config.serverUrl}/dict/import`'-->
+<!--          :on-success="handleImportSuccess"-->
+<!--          :headers="{ Authorization: token}"-->
+<!--      >-->
+<!--        <el-button type="primary">-->
+<!--          <el-icon style="vertical-align: middle">-->
+<!--            <Bottom />-->
+<!--          </el-icon>  <span style="vertical-align: middle"> 导入 </span>-->
+<!--        </el-button>-->
+<!--      </el-upload>-->
+<!--      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('dict.export')">-->
+<!--        <el-icon style="vertical-align: middle">-->
+<!--          <Top />-->
+<!--        </el-icon>  <span style="vertical-align: middle"> 导出 </span>-->
+<!--      </el-button>-->
+      <el-popconfirm title="you want to delete this?" @confirm="confirmDelBatch" v-if="auths.includes('dict.deleteBatch')">
         <template #reference>
           <el-button type="danger" style="margin-left: 5px">
             <el-icon style="vertical-align: middle">
               <Remove />
-            </el-icon>  <span style="vertical-align: middle"> batch deletion </span>
+            </el-icon>  <span style="vertical-align: middle"> DeleteBatch </span>
           </el-button>
         </template>
       </el-popconfirm>
@@ -189,23 +189,23 @@ const handleImportSuccess = () => {
     <div style="margin: 10px 0">
       <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" label="series number"></el-table-column>
-        <el-table-column prop="code" label="coding"></el-table-column>
-        <el-table-column prop="value" label="content">
+        <el-table-column prop="id" label="Id"></el-table-column>
+        <el-table-column prop="code" label="code"></el-table-column>
+        <el-table-column prop="value" label="value">
           <template #default="scope">
             <el-icon>
               <component :is="scope.row.value" />
             </el-icon>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="type"></el-table-column>
+        <el-table-column prop="type" label="Type"></el-table-column>
 
-        <el-table-column label="operate" width="180">
+        <el-table-column label="Action" width="180">
           <template #default="scope">
-            <el-button type="primary" @click="handleEdit(scope.row)" v-if="auths.includes('dict.edit')">编辑</el-button>
-            <el-popconfirm title="You sure you want to delete?" @confirm="del(scope.row.id)" v-if="auths.includes('dict.delete')">
+            <el-button type="primary" @click="handleEdit(scope.row)" v-if="auths.includes('dict.edit')">Edit</el-button>
+            <el-popconfirm title="you want to delete this?" @confirm="del(scope.row.id)" v-if="auths.includes('dict.delete')">
               <template #reference>
-                <el-button type="danger">delete</el-button>
+                <el-button type="danger">Delete</el-button>
               </template>
             </el-popconfirm>
           </template>
@@ -220,18 +220,18 @@ const handleImportSuccess = () => {
           v-model:current-page="pageNum"
           v-model:page-size="pageSize"
           background
-          :page-sizes="[2, 5, 10, 20]"
-          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="10"
+          layout="total, prev, pager, next, jumper"
           :total="total"
       />
     </div>
 
-    <el-dialog v-model="dialogFormVisible" title="information" width="40%">
+    <el-dialog v-model="dialogFormVisible" title="Info" width="40%">
       <el-form ref="ruleFormRef" :rules="rules" :model="state.form" label-width="80px" style="padding: 0 20px" status-icon>
-        <el-form-item prop="code" label="coding" >
+        <el-form-item prop="code" label="code" >
           <el-input v-model="state.form.code" autocomplete="off" />
         </el-form-item>
-        <el-form-item prop="value" label="information" >
+        <el-form-item prop="value" label="value" >
           <el-input v-model="state.form.value" autocomplete="off" />
         </el-form-item>
         <el-form-item prop="type" label="type" >
@@ -243,9 +243,9 @@ const handleImportSuccess = () => {
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">cancel</el-button>
+        <el-button @click="dialogFormVisible = false">Cancel</el-button>
         <el-button type="primary" @click="save">
-          save
+          Save
         </el-button>
       </span>
       </template>

@@ -2,6 +2,7 @@ package com.example.springboot.entity;
 
 import cn.hutool.core.annotation.Alias;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
@@ -50,4 +51,12 @@ private static final long serialVersionUID = 1L;
     @Alias("delete logic")
     @TableLogic(value = "0", delval = "id")
     private Integer deleted;
+
+    private String subject;
+
+    @TableField(exist = false)
+    private Availability availability;
+    @TableField(exist = false)
+    private User user;
+
 }
