@@ -17,7 +17,14 @@ import request from "@/utils/request";
             </div>
           </template>
           <div>
-            calendar?
+            <el-calendar>
+              <template #dateCell="{ date, data }">
+                <p :class="data.isSelected ? 'is-selected' : ''">
+                  {{ data.day.split('-')[2] }}
+                  {{ data.isSelected ? '✔️' : '' }}
+                </p>
+              </template>
+            </el-calendar>
           </div>
         </el-card>
       </el-col>
@@ -40,3 +47,10 @@ import request from "@/utils/request";
 
   </div>
 </template>
+
+<style>
+
+.is-selected {
+  color: #1989FA;
+}
+</style>

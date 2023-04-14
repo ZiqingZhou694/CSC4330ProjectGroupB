@@ -6,8 +6,8 @@ import zhCn from 'element-plus/dist/locale/en.mjs'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 
-import vue3videoPlay from 'vue3-video-play' // import vue component
-import 'vue3-video-play/dist/style.css' // import css
+import vue3videoPlay from 'vue3-video-play' // 引入组件
+import 'vue3-video-play/dist/style.css' // 引入css
 
 
 import App from './App.vue'

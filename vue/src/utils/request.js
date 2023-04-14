@@ -6,34 +6,34 @@ import { useUserStore } from "@/stores/user";
 
 const request = axios.create({
     baseURL: `http://${config.serverUrl}`,
-    timeout: 5000  // Setting the timeout period of the background interface
+    timeout: 5000  // 后台接口超时时间设置
 })
 
-// request interceptor
-// You can do some processing on the request before it is sent
-// For example, a unified token is added to encrypt request parameters
+// request 拦截器
+// 可以自请求发送前对请求做一些处理
+// 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
-    config.headers['Authorization'] = useUserStore().getBearerToken;
+    config.headers['Authorization'] = useUserStore().getBearerToken;  // 设置请求头
     return config
 }, error => {
     return Promise.reject(error)
 });
 
-// response interceptor
-// The result can be uniformly processed after the interface responds
+// response 拦截器
+// 可以在接口响应后统一处理结果
 request.interceptors.response.use(
     response => {
         let res = response.data;
-        // If it is a returned file
+        // 如果是返回的文件
         if (response.config.responseType === 'blob') {
             return res
         }
-        // Compatible string data returned by the server
+        // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
             res = res ? JSON.parse(res) : res
         }
-        // Gives a prompt when permission verification fails
+        // 当权限验证不通过的时候给出提示
         if (res.code === '401') {
             // ElMessage.error(res.msg);
             router.push("/login")

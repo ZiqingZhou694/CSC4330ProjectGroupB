@@ -8,7 +8,7 @@
 
 .editor-content-view p,
 .editor-content-view li {
-    white-space: pre-wrap; /* keep spaces */
+    white-space: pre-wrap; /* 保留空格 */
 }
 
 .editor-content-view blockquote {
@@ -53,7 +53,7 @@
 
 #editor—wrapper {
     border: 1px solid #ccc;
-    z-index: 100;
+    z-index: 100; /* 按需定义 */
 }
 #toolbar-container { border-bottom: 1px solid #ccc; }
 #editor-container { height: 500px; }

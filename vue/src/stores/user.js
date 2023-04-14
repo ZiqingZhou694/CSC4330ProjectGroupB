@@ -28,7 +28,7 @@ export const useUserStore = defineStore('manager', {
     actions: {
         setManagerInfo(managerInfo) {
             this.managerInfo = managerInfo
-            // set router
+            // 设置路由
             setRoutes(managerInfo.menus)
         },
         setUser(user) {
@@ -39,6 +39,6 @@ export const useUserStore = defineStore('manager', {
             router.push('/login')
         }
     },
-    // Enable data persistence
+    // 开启数据持久化
     persist: true
 })

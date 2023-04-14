@@ -26,7 +26,9 @@ const login = () => {
           ElMessage.success('login success')
           const userStore = useUserStore()
           userStore.setManagerInfo(res.data)
-          router.push('/')
+          // router.push('/')
+          router.push('/home')
+
         } else {
           ElMessage.error(res.msg)
         }
@@ -35,11 +37,29 @@ const login = () => {
   })
 }
 
+const Refresh = () => {
+  router.push('/').then(() => {
+    location.reload();
+  })
+}
+
 </script>
 
 <template>
   <div style="height: 100vh; overflow: hidden; background-color: aliceblue">
-    <div style="width: 100%; background-color: rgba(65, 105, 225,.1);padding: 15px 30px; color: dodgerblue; font-size: 20px; position: absolute">Tutoring Center</div>
+    <div style="width: 100%; background-color: rgba(65, 105, 225,.1);padding: 15px 30px; color: dodgerblue; font-size: 20px; position: absolute">
+<!--      Tutoring Center-->
+      <div style="width: 20px">
+        <!--        改动-->
+        <router-link to="/" style="text-decoration: none" @click="Refresh">
+          <div style="width: 200px; color: dodgerblue; font-weight: bold;  text-align: center; font-size: 20px">
+            <img src="../assets/lsu.png" alt="" style="width: 40px; position: relative; top: 5px;">
+            Tutoring Center
+          </div>
+          <!--          改动 -->
+        </router-link>
+      </div>
+    </div>
     <div style="display: flex; width: 50%; margin: 150px auto; background-color: white;
       box-shadow: 0 0 10px -2px rgba(30, 144, 255,.5); overflow: hidden; border-radius: 10px">
       <div style="padding:30px">
@@ -63,16 +83,6 @@ const login = () => {
             <el-form-item prop="password">
               <el-input v-model="loginData.password" show-password placeholder="password" :prefix-icon="Lock"/>
             </el-form-item>
-<!--            <div style="display: flex; margin: 15px 0" v-if="failCount >= 3">-->
-<!--              <div style="flex: 1">-->
-<!--                <el-input v-model="loginData.code" placeholder="验证码"></el-input>-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                <div @click="refreshCode" style="margin-left: 5px">-->
-<!--                  <SIdentify :identifyCode="identifyCode" />-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
             <el-form-item>
               <el-button type="primary" style="width: 100%" @click="login">Login</el-button>
             </el-form-item>
