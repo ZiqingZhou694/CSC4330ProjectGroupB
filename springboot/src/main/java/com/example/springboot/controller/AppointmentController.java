@@ -48,18 +48,13 @@ public class AppointmentController {
     public Result save(@RequestBody Appointment appointment) {
        Availability availability = availabilityService.getById(appointment.getAvailabilityId());
 
-//        String status = availability.getStatus();
-//        if (!""){
-//
-//        }
-
         User user = SessionUtils.getUser();
         Integer userId = user.getId();
         Appointment appointment1 = appointmentService.getOne(new QueryWrapper<Appointment>().eq("user_id", userId).eq("availability_id", appointment.getAvailabilityId()));
         if(!Objects.isNull(appointment1)){
             throw new ServiceException("you already book this appointment!");
         }
-        if(availability.getNums()<1){
+        if(availability.getNumsLeft()<1){
             throw new ServiceException(("sorry the number of appointments is full"));
         }
 
@@ -116,6 +111,7 @@ public class AppointmentController {
         return Result.success(appointmentService.list());
     }
 
+
     @GetMapping("/{id}")
     @SaCheckPermission("appointment.list")
     public Result findOne(@PathVariable Integer id) {
@@ -150,6 +146,5 @@ public class AppointmentController {
 
         return Result.success(page);
     }
-
 
 }

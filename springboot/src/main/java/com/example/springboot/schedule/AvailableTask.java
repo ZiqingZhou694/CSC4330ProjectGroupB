@@ -72,12 +72,29 @@ public class AvailableTask {
 
 
         log.info("I am a scheduled task, and my task to update the appointment status begins.");
+//        List<Appointment> appointmentList = appointmentService.list(new QueryWrapper<Appointment>().eq("status", "Pending"));
+//        for(Appointment appointment : appointmentList){
+//            String time = appointment.getTime();
+//            DateTime datetime = DateUtil.parseDateTime(time);
+//
+//            DateUtil.offsetMinute(datetime, 60);
+//            if(datetime.isAfter(new Date())){
+//
+//                Integer availabilityId = appointment.getAvailabilityId();
+//                Availability availability = availabilityService.getById(availabilityId);
+//                availability.setNumsLeft(availability.getNumsLeft() + 1);
+//                availabilityService.updateById(availability);
+//                appointmentService.removeById(appointment.getId());
+//                User user = userService.getById(appointment.getUserId());
+//                log.info("Cancel {}'s {} appointment ", user.getLastName(), availability.getSubject());
+//            }
+//        }
         List<Appointment> appointmentList = appointmentService.list(new QueryWrapper<Appointment>().eq("status", "Pending"));
         for(Appointment appointment : appointmentList){
             String time = appointment.getTime();
             DateTime datetime = DateUtil.parseDateTime(time);
 
-            DateUtil.offsetMinute(datetime, 60);
+            datetime = DateUtil.offsetMinute(datetime, 60);
             if(datetime.isBefore(new Date())){
 
                 Integer availabilityId = appointment.getAvailabilityId();
@@ -90,6 +107,27 @@ public class AvailableTask {
             }
         }
 
+        log.info("I am a scheduled task, and my task to update the appointment status has ended.");
+
+        log.info("I am a scheduled task, and my task to update the appointment time begins.");
+        List<Appointment> appointmentList2 = appointmentService.list();
+        for(Appointment appointment : appointmentList2){
+            String time = appointment.getTime();
+            DateTime datetime = DateUtil.parseDateTime(time);
+
+            // 偏移30天
+            datetime = DateUtil.offsetDay(datetime, 30);
+            if(datetime.isBefore(new Date())){
+
+                Integer availabilityId = appointment.getAvailabilityId();
+                Availability availability = availabilityService.getById(availabilityId);
+//                availability.setNumsLeft(availability.getNumsLeft() + 1);
+//                availabilityService.updateById(availability);
+                appointmentService.removeById(appointment.getId());
+                User user = userService.getById(appointment.getUserId());
+                log.info("Cancel {}'s {} appointment ", user.getLastName(), availability.getSubject());
+            }
+        }
         log.info("I am a scheduled task, and my task to update the appointment status has ended.");
     }
 }

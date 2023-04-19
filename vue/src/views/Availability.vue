@@ -244,7 +244,13 @@ const loadRating = async (foreignId) => {
     ElMessage.error('Failed to load rating data')
   }
 }
-// nums to book
+
+// show weeks
+const getDayOfWeek = (dateString) => {
+  const date = new Date(dateString);
+  const days = ['Monday',  'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'];
+  return days[date.getDay()];
+};
 
 
 </script>
@@ -307,8 +313,14 @@ const loadRating = async (foreignId) => {
     <div style="margin: 10px 0">
       <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" label="Id" ></el-table-column>
-        <el-table-column prop="date" label="date"></el-table-column>
+        <el-table-column prop="id" label="Id" v-if="user.role ==='ADMIN'"></el-table-column>
+<!--        <el-table-column prop="date" label="date"></el-table-column>-->
+        <el-table-column label="date">
+          <template #default="scope">
+            {{ scope.row.date }}
+            {{ getDayOfWeek(scope.row.date) }}
+          </template>
+        </el-table-column>
         <el-table-column width="150" prop="name" label="tutor name"></el-table-column>
         <el-table-column prop="subject" label="subject"></el-table-column>
         <el-table-column prop="startTime" label="start time"></el-table-column>
@@ -322,7 +334,7 @@ const loadRating = async (foreignId) => {
           </template>
         </el-table-column>
 <!--        <el-table-column prop="numsLeft" width="100" label="nums Left"></el-table-column>-->
-        <el-table-column prop="status" label="status" v-if="auths.includes('availability.status')">
+        <el-table-column prop="status" label="status" v-if="auths.includes('availability.status')" width="100">
           <template #default = "scope">
             <el-tag v-if="scope.row.status === 'Available'" type="success">Available</el-tag>
             <el-tag v-if="scope.row.status === 'Expired'" type="danger">Expired</el-tag>
@@ -493,10 +505,6 @@ const loadRating = async (foreignId) => {
               </el-rate></div>
             <div style="margin-top: 5px; color: #666">{{ item.content }}</div>
           </div>
-<!--          <span></span>-->
-<!--          <p>Comment 1: Great tutor!</p>-->
-<!--          <p>Comment 2: Very helpful.</p>-->
-<!--          <p>Comment 3: Explains concepts clearly.</p>-->
         </div>
       </div>
     </el-dialog>

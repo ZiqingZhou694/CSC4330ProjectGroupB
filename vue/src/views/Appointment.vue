@@ -284,13 +284,13 @@ const handleRatingSubmit = () =>{
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="Id" ></el-table-column>
         <el-table-column prop="time" label="appointment time"></el-table-column>
-      <el-table-column  label="Tutor Name ">
+      <el-table-column  label="Tutor" v-if="user.role ==='ADMIN'||user.role ==='STUDENT'">
         <template #default="scope">
 <!--          <span v-if="scope.row.availabilityId">{{ state.availabilityOptions.find(v => v.id === scope.row.availabilityId) ? state.availabilityOptions.find(v => v.id === scope.row.availabilityId).name : '' }}</span>-->
           {{scope.row.availability.name}}
         </template></el-table-column>
       <el-table-column prop="subject" label="Subject"></el-table-column>
-      <el-table-column label="user " v-if="user.role ==='ADMIN'">
+      <el-table-column label="Student " v-if="user.role ==='ADMIN'|| user.role ==='TUTOR'">
         <template #default="scope">
 <!--          <span v-if="scope.row.userId">{{ state.userOptions.find(v => v.id === scope.row.userId) ? state.userOptions.find(v => v.id === scope.row.userId).firstName + ' ' + state.userOptions.find(v => v.id === scope.row.userId).lastName: '' }}</span>-->
           {{scope.row.user.firstName}} {{scope.row.user.lastName}}
@@ -330,38 +330,37 @@ const handleRatingSubmit = () =>{
       />
     </div>
 
-    <el-dialog v-model="dialogFormVisible" title="Appointment Info" width="40%">
-      <el-form ref="ruleFormRef" :rules="rules" :model="state.form" label-width="80px" style="padding: 0 20px" status-icon>
-        <el-form-item prop="availabilityId" label="availability ">
-          <el-select clearable v-model="state.form.availabilityId" placeholder="pick"  style="width: 100%">
-            <el-option v-for="item in state.availabilityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="status" label="pending">
-          <el-input v-model="state.form.status" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item prop="time" label="appointment time">
-          <el-date-picker style="width: 100%" v-model="state.form.time" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" placeholder="Choose Datetime"></el-date-picker>
-        </el-form-item>
-        <el-form-item prop="userId" label="user ">
-          <el-select clearable v-model="state.form.userId" placeholder="pick"  style="width: 100%">
-            <el-option v-for="item in state.userOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
+<!--    <el-dialog v-model="dialogFormVisible" title="Appointment Info" width="40%">-->
+<!--      <el-form ref="ruleFormRef" :rules="rules" :model="state.form" label-width="80px" style="padding: 0 20px" status-icon>-->
+<!--        <el-form-item prop="availabilityId" label="availability ">-->
+<!--          <el-select clearable v-model="state.form.availabilityId" placeholder="pick"  style="width: 100%">-->
+<!--            <el-option v-for="item in state.availabilityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item prop="status" label="pending">-->
+<!--          <el-input v-model="state.form.status" autocomplete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item prop="time" label="appointment time">-->
+<!--          <el-date-picker style="width: 100%" v-model="state.form.time" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" placeholder="Choose Datetime"></el-date-picker>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item prop="userId" label="user ">-->
+<!--          <el-select clearable v-model="state.form.userId" placeholder="pick"  style="width: 100%">-->
+<!--            <el-option v-for="item in state.userOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
 
-      </el-form>
-      <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="save">
-          Save
-        </el-button>
-      </span>
-      </template>
-    </el-dialog>
+<!--      </el-form>-->
+<!--      <template #footer>-->
+<!--      <span class="dialog-footer">-->
+<!--        <el-button @click="dialogFormVisible = false">Cancel</el-button>-->
+<!--        <el-button type="primary" @click="save">-->
+<!--          Save-->
+<!--        </el-button>-->
+<!--      </span>-->
+<!--      </template>-->
+<!--    </el-dialog>-->
 
     <el-dialog v-model="RateDialogVisible" title="Rating" width="30%">
-      <!--      do view pop dialog in here       -->
       <div style="margin: 20px 0">
         <el-rate
             v-model="state.rating.rate"
