@@ -176,6 +176,30 @@ function drawPieChart() {
   pieChart.setOption(pieOption)
 }
 
+const greetingTextByTime = () => {
+  const currentHour = new Date().getHours();
+  if (currentHour >= 5 && currentHour < 12) {
+    return "Good morning";
+  } else if (currentHour >= 12 && currentHour < 18) {
+    return "Good afternoon";
+  } else {
+    return "Good evening";
+  }
+};
+
+let sentenceIndex = Math.floor(Math.random() * 4);
+const sentences = [
+  "Welcome to the appointment system!",
+  "Have a great day!",
+  "Don't forget to check your appointments!",
+  "Stay organized and plan your day!",
+];
+const randomSentences = () => {
+  return sentences[sentenceIndex];
+};
+setInterval(() => {
+  sentenceIndex = (sentenceIndex + 1) % 4;
+}, 5 * 60 * 1000);
 
 
 </script>
@@ -186,9 +210,15 @@ function drawPieChart() {
       <el-col :span="16">
         <el-card shadow="hover">
           <template #header>
-            <div>
-              <span> Don't know what to put yet maybe a calendar?
-              </span>
+            <div style="display: flex">
+              <div style="width: auto; height: 32px; overflow: hidden; padding: 4px;margin-right: 5px;">
+                <div class="greeting" style=" margin-left: 10px; margin-right: 10px">{{ greetingTextByTime() }}  :</div>
+              </div>
+<!--              <div style="width: 80%; display: flex">  :  <marquee>{{ randomSentences() }}</marquee></div> &lt;!&ndash; 滚动广播随机滚动几个句子 &ndash;&gt;-->
+              <div style="width: 80%; height: 32px; overflow: hidden; border: 1px solid #ccc; border-radius: 4px; padding: 4px;">
+                <div class="scrolling-text">{{ randomSentences() }}</div>
+              </div>
+
             </div>
           </template>
           <div>
@@ -215,7 +245,7 @@ function drawPieChart() {
         <el-card shadow="hover">
           <template #header>
             <div>
-              <span>Message</span>
+              <span style="font-weight: bold; font-size: large">Message</span>
               <el-divider></el-divider>
               <div v-if="user.role ==='TUTOR'">
                 <!-- Use the state.pendingCount to determine if there is data to show -->
@@ -314,5 +344,27 @@ function drawPieChart() {
 .is-selected {
   color: #1989FA;
 }
+.greeting{
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;font-weight:bold;
+  font-size: large;
+  color: #FFB900;
+}
+.scrolling-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: scrolling 20s linear infinite;
+  align-items: flex-start;
+  width: 100%;
+  color: rebeccapurple;
+}
 
+@keyframes scrolling {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
 </style>
