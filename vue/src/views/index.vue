@@ -32,9 +32,10 @@
 
   <div>
     <el-carousel :interval="5000" arrow="always">
-      <el-carousel-item v-for="item in 4" :key="item">
-        <h3>{{ item }}</h3>
-      </el-carousel-item>
+      <el-carousel-item><img src="../assets/index1.png" class="carousel_image_type"></el-carousel-item>
+      <el-carousel-item><img src="../assets/index2.png" class="carousel_image_type"></el-carousel-item>
+      <el-carousel-item><img src="../assets/index3.png" class="carousel_image_type"></el-carousel-item>
+      <el-carousel-item><img src="../assets/index4.png" class="carousel_image_type"></el-carousel-item>
     </el-carousel>
   </div>
   <div>please edit in here or create a new div!</div>
@@ -71,6 +72,11 @@ const isLoggedIn = computed(() => !!user.avatar)
   opacity: 0.75;
   line-height: 300px;
   margin: 0;
+}
+
+.carousel_image_type{
+  width: 100%;
+  height: 100%!important;
 }
 
 .el-carousel__item:nth-child(2n) {
