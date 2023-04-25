@@ -1,69 +1,73 @@
 <script setup>
 import { reactive, ref} from "vue"
+import { User, Lock, Message } from '@element-plus/icons-vue'
 import request from "@/utils/request";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 
-const RegisterData = reactive({})
-const checkpw = (rule, value,callback) =>{
-  if (RegisterData.password !== RegisterData.confirmPassword) {
-    callback(new Error("password don't match"));
-  }else{
-    callback();
-  }
-}
-const rules = reactive({
-  username: [
-    { required: true, message: 'please enter your username', trigger: 'blur' },
-  ],
-  firstName: [
-    { required: true, message: 'please enter your first name', trigger: 'blur' },
-  ],
-  lastName: [
-    { required: true, message: 'please enter your last name', trigger: 'blur' },
-  ],
-  email: [
-    { required: true, message: 'please enter your email', trigger: 'blur' },
-    { pattern:/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[edu])+/, message: 'please enter your university email', trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: 'please enter your password', trigger: 'blur' },
-    { min: 3, max: 20, message: 'password length must between 3-20', trigger: 'blur' },
-  ],
-  confirmPassword: [
-    { required: true, message: 'please confirm your password', trigger: 'blur' },
-    { min: 3, max: 20, message: 'password length must between 3-20', trigger: 'blur' },
-    { validator: checkpw, trigger: 'blur'}
-  ],
-})
-
-const ruleFormRef = ref()
-const login = () => {
-  ruleFormRef.value.validate(valid => {
-    if (valid) {
-      request.post('/register', RegisterData).then(res => {
-        if (res.code === '200') {
-          ElMessage.success('register successfully')
-          router.push('/login')
-        } else {
-          ElMessage.error(res.msg)
-        }
-      })
-
+  const RegisterData = reactive({})
+  const checkpw = (rule, value,callback) =>{
+    if (RegisterData.password !== RegisterData.confirmPassword) {
+      callback(new Error("password don't match"));
+    }else{
+      callback();
     }
+  }
+  const rules = reactive({
+    username: [
+      { required: true, message: 'please enter your username', trigger: 'blur' },
+    ],
+    firstName: [
+      { required: true, message: 'please enter your first name', trigger: 'blur' },
+    ],
+    lastName: [
+      { required: true, message: 'please enter your last name', trigger: 'blur' },
+    ],
+    email: [
+      { required: true, message: 'please enter your email', trigger: 'blur' },
+      { pattern:/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[edu])+/, message: 'please enter your university email', trigger: 'blur' },
+    ],
+    password: [
+      { required: true, message: 'please enter your password', trigger: 'blur' },
+      { min: 3, max: 20, message: 'password length must between 3-20', trigger: 'blur' },
+    ],
+    confirmPassword: [
+      { required: true, message: 'please confirm your password', trigger: 'blur' },
+      { min: 3, max: 20, message: 'password length must between 3-20', trigger: 'blur' },
+      { validator: checkpw, trigger: 'blur'}
+    ],
   })
-}
+
+  const ruleFormRef = ref()
+  const login = () => {
+    ruleFormRef.value.validate(valid => {
+      if (valid) {
+          // 发送表单数据给后台
+          request.post('/register', RegisterData).then(res => {
+            if (res.code === '200') {
+              ElMessage.success('register successfully')
+              router.push('/login')
+            } else {
+              ElMessage.error(res.msg)
+            }
+          })
+
+      }
+    })
+  }
 
 </script>
 
 <template>
   <div style="height: 100vh; overflow: hidden; background-color: aliceblue">
     <div style="width: 100%; background-color: rgba(65, 105, 225,.1);padding: 15px 30px; color: dodgerblue; font-size: 20px; position: absolute">
+      <!--        改动-->
       <router-link to="/" style="text-decoration: none" @click="Refresh">
         <div style="width: 200px; color: dodgerblue; font-weight: bold;  text-align: center; font-size: 20px">
           <img src="../assets/lsu.png" alt="" style="width: 40px; position: relative; top: 5px;">
           Tutoring Center
         </div>
+        <!--          改动 -->
       </router-link>
     </div>
     <div style="display: flex; width: 50%; margin: 120px auto; background-color: white;

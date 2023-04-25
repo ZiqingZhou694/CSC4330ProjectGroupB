@@ -9,7 +9,7 @@ import {useUserStore} from "@/stores/user";
 const name = ref('')
 const subject = ref('')
 const pageNum = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 const total = ref(0)
 
 
@@ -168,30 +168,16 @@ const del = (id) => {
     }
   })
 }
+// format Time
+const formatTime = (time) => {
+  const [hour, minute] = time.split(':');
+  const hour24 = parseInt(hour, 10);
+  const hour12 = hour24 % 12 || 12;
+  const period = hour24 < 12 ? 'AM' : 'PM';
+  return `${hour12.toString().padStart(2, '0')}:${minute} ${period}`;
+}
 
-// 导出接口 这些没必要
-// const exportData = () => {
-//   window.open(`http://${config.serverUrl}/availability/export`)
-// }
-//
-//
-// const handleImportSuccess = () => {
-//   // 刷新表格
-//   load()
-//   ElMessage.success("Import success")
-// }
-//
-// const handleFileUploadSuccess = (res) => {
-//   state.form.file = res.data
-//   ElMessage.success('upload success')
-// }
 
-// // 如果 view 想显示tutor头像可以用 或者用其他方法
-// //方法还没确定
-// const handleImgUploadSuccess = (res) => {
-//   state.form.img = res.data
-//   ElMessage.success('image upload success')
-// }
 // 这里是 schedule弹窗的脚本
 // const scheduleDialogVisible = ref(false)
 // const handleSchedule = (row) =>{
@@ -212,7 +198,7 @@ const handleScheduleSave = (row) =>{
   })
 }
 
-// view 的弹窗脚本
+// view
 const viewDialogVisible = ref(false)
 // 这个handle 要有不然弹窗打不开
 const handleView = (row) =>{
@@ -233,7 +219,6 @@ const handleComment = (row) =>{
 }
 
 //rating
-// const value = ref()
 const colors = ['#99A9BF', '#F7BA2A', '#FF9900']
 const loadRating = async (foreignId) => {
   try {
@@ -323,11 +308,33 @@ const getDayOfWeek = (dateString) => {
         </el-table-column>
         <el-table-column width="150" prop="name" label="tutor name"></el-table-column>
         <el-table-column prop="subject" label="subject"></el-table-column>
-        <el-table-column prop="startTime" label="start time"></el-table-column>
-        <el-table-column prop="endTime" label="end time"></el-table-column>
+        <el-table-column prop="startTime" label="start time">
+          <template #default="scope">
+            {{ formatTime(scope.row.startTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="endTime" label="end time">
+          <template #default="scope">
+            {{ formatTime(scope.row.endTime) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="tutorId" label="Tutor Id" v-if="user.role ==='ADMIN' || (user.role === 'TUTOR')"  ></el-table-column>
 <!--        <el-table-column label="tutor "><template #default="scope"><span v-if="scope.row.tutorId">{{ state.tutorOptions.find(v => v.id === scope.row.tutorId) ? state.tutorOptions.find(v => v.id === scope.row.tutorId).name : '' }}</span></template></el-table-column>-->
-      <el-table-column prop="virtualLink" label="link"></el-table-column>
+      <el-table-column prop="virtualLink" label="link" v-if="user.role ==='ADMIN' || (user.role === 'TUTOR')">
+        <template #default="scope">
+          <el-tooltip
+              class="link-tooltip"
+              effect="light"
+              :content="scope.row.virtualLink"
+              placement="top-start"
+          >
+            <el-link type="primary" :href="scope.row.virtualLink" >
+              {{scope.row.virtualLink}}
+            </el-link>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+
         <el-table-column  width="70" label="nums">
           <template #default = "scope">
             {{scope.row.numsLeft}} / {{scope.row.nums}}
@@ -523,5 +530,14 @@ const getDayOfWeek = (dateString) => {
   cursor: pointer;
   position: relative;
 }
+
+ .el-link {
+   display: inline-block;
+   max-width: 200px; /* 你可以根据需要设置最大宽度 */
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
+
 
 </style>

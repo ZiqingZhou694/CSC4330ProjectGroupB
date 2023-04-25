@@ -245,21 +245,21 @@ setInterval(() => {
               <el-divider></el-divider>
               <div v-if="user.role ==='TUTOR'">
                 <template v-if="state.pendingCount > 0 || state.acceptedCount > 0 || state.TodayAppointmentCount > 0">
-                <template v-if="state.pendingCount > 0">
-                  <el-alert type="warning" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 220px;">You have ({{ state.pendingCount }}) pending appointment(s)!</span>
-                  </el-alert>
-                </template>
-                <template v-if="state.acceptedCount > 0">
-                  <el-alert type="success" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 200px;">You accepted ({{ state.acceptedCount }}) appointment(s)!</span>
-                  </el-alert>
-                </template>
-                <template v-if="state.acceptedCount > 0">
-                  <el-alert type="info" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 200px;">You have ({{ state.TodayAppointmentCount }}) appointment(s) Today!</span>
-                  </el-alert>
-                </template>
+                  <template v-if="state.pendingCount > 0">
+                    <el-alert type="warning" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 220px;">You have ({{ state.pendingCount }}) pending appointment(s)!</span>
+                    </el-alert>
+                  </template>
+                  <template v-if="state.acceptedCount > 0">
+                    <el-alert type="success" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 200px;">You accepted ({{ state.acceptedCount }}) appointment(s)!</span>
+                    </el-alert>
+                  </template>
+                  <template v-if="state.acceptedCount > 0">
+                    <el-alert type="info" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 200px;">You have ({{ state.TodayAppointmentCount }}) appointment(s) Today!</span>
+                    </el-alert>
+                  </template>
                 </template>
                 <template v-else>
                   <div style="display: flex; justify-content: center; align-items: center; color: #bbb;">No Message</div>
@@ -268,21 +268,21 @@ setInterval(() => {
               <div v-if="user.role ==='ADMIN'">
                 <!-- Same as above -->
                 <template v-if="state.pendingCount > 0 || state.acceptedCount > 0 || state.TodayAppointmentCount > 0 ||state.declinedCount > 0">
-                <template v-if="state.pendingCount > 0">
-                  <el-alert type="warning" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 220px;">There are ({{ state.pendingCount }}) pending appointment(s)!</span>
-                  </el-alert>
-                </template>
-                <template v-if="state.acceptedCount > 0">
-                  <el-alert type="success" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 200px;">There are ({{ state.acceptedCount }}) appointment(s) been accepted Today!</span>
-                  </el-alert>
-                </template>
-                <template v-if="state.acceptedCount > 0">
-                  <el-alert type="info" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 200px;">There are ({{ state.TodayAppointmentCount }}) appointment(s) Today!</span>
-                  </el-alert>
-                </template>
+                  <template v-if="state.pendingCount > 0">
+                    <el-alert type="warning" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 220px;">There are ({{ state.pendingCount }}) pending appointment(s)!</span>
+                    </el-alert>
+                  </template>
+                  <template v-if="state.acceptedCount > 0">
+                    <el-alert type="success" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 200px;">There are ({{ state.acceptedCount }}) appointment(s) been accepted Today!</span>
+                    </el-alert>
+                  </template>
+                  <template v-if="state.acceptedCount > 0">
+                    <el-alert type="info" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 200px;">There are ({{ state.TodayAppointmentCount }}) appointment(s) Today!</span>
+                    </el-alert>
+                  </template>
                   <template v-if="state.declinedCount > 0">
                     <el-alert type="error" show-icon :closable="true" style="display: flex; align-items: center;">
                       <span style="margin-right: 200px;">There are ({{ state.declinedCount }}) appointment(s) been Declined Today!</span>
@@ -296,21 +296,21 @@ setInterval(() => {
 
               <div v-if="user.role ==='STUDENT'">
                 <template v-if="state.pendingCount > 0 || state.acceptedCount > 0 || state.TodayAppointmentCount > 0 ||state.declinedCount > 0">
-                <template v-if="state.acceptedCount > 0">
-                  <el-alert type="success" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 200px;">Your appointment(s) been accepted!</span>
-                  </el-alert>
-                </template>
+                  <template v-if="state.acceptedCount > 0">
+                    <el-alert type="success" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 200px;">Your appointment(s) been accepted!</span>
+                    </el-alert>
+                  </template>
                   <template v-if="state.declinedCount > 0">
                     <el-alert type="error" show-icon :closable="true" style="display: flex; align-items: center;">
                       <span style="margin-right: 200px;">You have ({{ state.declinedCount }}) appointment(s) been Declined!</span>
                     </el-alert>
                   </template>
-                <template v-if="state.acceptedCount > 0 && state.TodayAppointmentCount !==0">
-                  <el-alert type="info" show-icon :closable="true" style="display: flex; align-items: center;">
-                    <span style="margin-right: 200px;">You have ({{ state.TodayAppointmentCount }}) appointment(s) Today!</span>
-                  </el-alert>
-                </template>
+                  <template v-if="state.acceptedCount > 0 && state.TodayAppointmentCount !==0">
+                    <el-alert type="info" show-icon :closable="true" style="display: flex; align-items: center;">
+                      <span style="margin-right: 200px;">You have ({{ state.TodayAppointmentCount }}) appointment(s) Today!</span>
+                    </el-alert>
+                  </template>
                 </template>
                 <template v-else>
                   <div style="display: flex; justify-content: center; align-items: center; color: #bbb;">No Message</div>

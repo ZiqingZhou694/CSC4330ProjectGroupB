@@ -7,7 +7,7 @@ import {useUserStore} from "@/stores/user";
 
 const name = ref('')
 const pageNum = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 const total = ref(0)
 const permissionTreeRef = ref()
 const userStore = useUserStore()

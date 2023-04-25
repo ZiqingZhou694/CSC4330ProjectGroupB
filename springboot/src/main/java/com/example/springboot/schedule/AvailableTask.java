@@ -72,23 +72,8 @@ public class AvailableTask {
 
 
         log.info("I am a scheduled task, and my task to update the appointment status begins.");
-//        List<Appointment> appointmentList = appointmentService.list(new QueryWrapper<Appointment>().eq("status", "Pending"));
-//        for(Appointment appointment : appointmentList){
-//            String time = appointment.getTime();
-//            DateTime datetime = DateUtil.parseDateTime(time);
-//
-//            DateUtil.offsetMinute(datetime, 60);
-//            if(datetime.isAfter(new Date())){
-//
-//                Integer availabilityId = appointment.getAvailabilityId();
-//                Availability availability = availabilityService.getById(availabilityId);
-//                availability.setNumsLeft(availability.getNumsLeft() + 1);
-//                availabilityService.updateById(availability);
-//                appointmentService.removeById(appointment.getId());
-//                User user = userService.getById(appointment.getUserId());
-//                log.info("Cancel {}'s {} appointment ", user.getLastName(), availability.getSubject());
-//            }
-//        }
+
+        //一个小时后 取消
         List<Appointment> appointmentList = appointmentService.list(new QueryWrapper<Appointment>().eq("status", "Pending"));
         for(Appointment appointment : appointmentList){
             String time = appointment.getTime();
@@ -129,5 +114,31 @@ public class AvailableTask {
             }
         }
         log.info("I am a scheduled task, and my task to update the appointment status has ended.");
+
+
     }
+
+    //每个月1号删除
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void monthlyTask() {
+        log.info("I am a scheduled task, and my task to update the appointment time begins.");
+        List<Appointment> appointmentList = appointmentService.list();
+        for(Appointment appointment : appointmentList){
+            String time = appointment.getTime();
+            DateTime datetime = DateUtil.parseDateTime(time);
+
+            // 偏移30天
+            // datetime = DateUtil.offsetDay(datetime, 30); // 不再需要这一行
+            if(DateUtil.dayOfMonth(datetime) == 1){ // 检查是否是每月的第一天
+
+                Integer availabilityId = appointment.getAvailabilityId();
+                Availability availability = availabilityService.getById(availabilityId);
+                appointmentService.removeById(appointment.getId());
+                User user = userService.getById(appointment.getUserId());
+                log.info("Cancel {}'s {} appointment ", user.getLastName(), availability.getSubject());
+            }
+        }
+        log.info("I am a scheduled task, and my task to update the appointment status has ended.");
+    }
+
 }
