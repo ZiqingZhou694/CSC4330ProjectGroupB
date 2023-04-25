@@ -13,16 +13,16 @@ const state = reactive({
 state.form.uid = user.uid
 const save = () => {
   if (state.form.newPassword !== state.form.confirmPassword) {
-    ElMessage.warning('两次输入的新密码不一致')
+    ElMessage.warning('two passwords didn’t match. Try again.')
     return
   }
   if (state.form.newPassword === state.form.password) {
-    ElMessage.warning('新旧密码不能一致')
+    ElMessage.warning('New password cannot be the same as your old password.')
     return
   }
   request.post("/password/change", state.form).then(res => {
     if (res.code === '200') {
-      ElMessage.success('修改密码成功')
+      ElMessage.success('Change successfully')
       userStore.logout()
     } else {
       ElMessage.error(res.msg)
@@ -32,13 +32,13 @@ const save = () => {
 
 const rules = reactive({
   password: [
-    { required: true, message: '请输入原密码', trigger: 'blur' },
+    { required: true, message: 'Current password', trigger: 'blur' },
   ],
   newPassword: [
-    { required: true, message: '请输入新密码', trigger: 'blur' },
+    { required: true, message: 'New password', trigger: 'blur' },
   ],
   confirmPassword: [
-    { required: true, message: '请确认新密码', trigger: 'blur' },
+    { required: true, message: 'Confirm password', trigger: 'blur' },
   ],
 })
 const ruleFormRef = ref()
@@ -48,13 +48,13 @@ const ruleFormRef = ref()
   <div>
     <el-card style="width: 40%; margin: 10px auto">
       <el-form style="width: 80%; margin: 0 auto" label-width="110px" :model="state.form" :rules="rules" ref="ruleFormRef">
-        <el-form-item label="请输入原密码" prop="password">
+        <el-form-item label="Current password" prop="password">
           <el-input show-password v-model="state.form.password"></el-input>
         </el-form-item>
-        <el-form-item label="请输入新密码" prop="newPassword">
+        <el-form-item label="New password" prop="newPassword">
           <el-input show-password v-model="state.form.newPassword"></el-input>
         </el-form-item>
-        <el-form-item label="请确认新密码" prop="confirmPassword">
+        <el-form-item label="Confirm password" prop="confirmPassword">
           <el-input show-password v-model="state.form.confirmPassword"></el-input>
         </el-form-item>
       </el-form>
