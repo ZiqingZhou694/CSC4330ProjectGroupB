@@ -59,7 +59,7 @@ const ruleFormRef = ref()
         </el-form-item>
       </el-form>
       <div style="text-align: center; width: 100%">
-        <el-button type="primary" @click="save">Save successfully</el-button>
+        <el-button type="primary" @click="save">Save</el-button>
       </div>
     </el-card>
   </div>
