@@ -13,16 +13,16 @@ const state = reactive({
 state.form.uid = user.uid
 const save = () => {
   if (state.form.newPassword !== state.form.confirmPassword) {
-    ElMessage.warning('The two new password entries do not match')
+    ElMessage.warning('two passwords didn’t match. Try again.')
     return
   }
   if (state.form.newPassword === state.form.password) {
-    ElMessage.warning('The new password cannot be the same as the old one')
+    ElMessage.warning('New password cannot be the same as your old password.')
     return
   }
   request.post("/password/change", state.form).then(res => {
     if (res.code === '200') {
-      ElMessage.success('Password change success')
+      ElMessage.success('Change successfully')
       userStore.logout()
     } else {
       ElMessage.error(res.msg)
@@ -55,6 +55,14 @@ const ruleFormRef = ref()
           <el-input show-password v-model="state.form.newPassword"></el-input>
         </el-form-item>
         <el-form-item label="Confirm New Password" prop="confirmPassword">
+      <el-form style="width: 80%; margin: 0 auto" label-width="110px" :model="state.form" :rules="rules" ref="ruleFormRef">
+        <el-form-item label="Current password" prop="password">
+          <el-input show-password v-model="state.form.password"></el-input>
+        </el-form-item>
+        <el-form-item label="New password" prop="newPassword">
+          <el-input show-password v-model="state.form.newPassword"></el-input>
+        </el-form-item>
+        <el-form-item label="Confirm password" prop="confirmPassword">
           <el-input show-password v-model="state.form.confirmPassword"></el-input>
         </el-form-item>
       </el-form>
