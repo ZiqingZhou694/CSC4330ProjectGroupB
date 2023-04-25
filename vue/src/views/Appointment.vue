@@ -149,7 +149,7 @@ const changeStatus = (row, status) =>{
   }).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // 刷新表格数据
+      load()  // Refresh table data
     } else {
       ElMessage.error(res.msg)
     }
