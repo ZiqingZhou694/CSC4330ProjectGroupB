@@ -26,17 +26,16 @@ const state = reactive({
   comments: []
 })
 state.form = Object.assign({}, user)
-const valueHtml = ref('')  // 富文本内容
+const valueHtml = ref('')
 
-// state.tutorOptions = []
-// request.get('/tutor').then(res => state.tutorOptions = res.data)
+
 state.userOptions = []
 request.get('/user').then(res => state.userOptions = res.data)
 
 
 const multipleSelection = ref([])
 
-// 批量删除
+
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -50,7 +49,7 @@ const confirmDelBatch = () => {
   request.post('/availability/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // 刷新表格数据
+      load()
     } else {
       ElMessage.error(res.msg)
     }
@@ -71,7 +70,7 @@ const load = () => {
     total.value = res.data.total
   })
 }
-load()  // 调用 load方法拿到后台数据
+load()
 
 const reset = () => {
   name.value = ''
@@ -84,9 +83,6 @@ const Hidden = ref(false)
 
 const rules = reactive({
 
-  // name: [
-  //   { required: true, message: "please enter the tutor's name", trigger: 'blur' },
-  // ],
   date: [
     { required: true, message: 'please enter a date', trigger: 'blur' },
   ],
@@ -102,15 +98,12 @@ const rules = reactive({
   nums: [
     { required: true, message: 'please enter total schedule number', trigger: 'blur' },
   ],
-  // tutorId: [
-  //   { required: true, message: "please enter the tutor's Id", trigger: 'blur' },
-  //   // { required: true, message: "please enter number only", type: 'number'}
-  // ]
+
 })
 
 const ruleFormRef = ref()
 
-// 新增
+
 const handleAdd = () => {
   dialogFormVisible.value = true
   if(user.role ==="ADMIN"){
@@ -121,24 +114,24 @@ const handleAdd = () => {
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = {}
-    valueHtml.value = ''  // 富文本
+    valueHtml.value = ''
   })
 }
 
-// 保存
+
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
+  ruleFormRef.value.validate(valid => {
     if (valid) {
-      state.form.content = valueHtml.value  // 富文本保存内容
+      state.form.content = valueHtml.value
       request.request({
         url: '/availability',
         method: state.form.id ? 'put' : 'post',
         data: state.form
       }).then(res => {
         if (res.code === '200') {
-          ElMessage.success('保存成功')
+          ElMessage.success('Save Success')
           dialogFormVisible.value = false
-          load()  // 刷新表格数据
+          load()
         } else {
           ElMessage.error(res.msg)
         }
@@ -147,22 +140,22 @@ const save = () => {
   })
 }
 
-// 编辑
+
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = JSON.parse(JSON.stringify(raw))
-    valueHtml.value = raw.content  // 富文本
+    valueHtml.value = raw.content
   })
 }
 
-// 删除
+
 const del = (id) => {
   request.delete('/availability/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // 刷新表格数据
+      load()
     } else {
       ElMessage.error(res.msg)
     }
@@ -177,15 +170,6 @@ const formatTime = (time) => {
   return `${hour12.toString().padStart(2, '0')}:${minute} ${period}`;
 }
 
-
-// 这里是 schedule弹窗的脚本
-// const scheduleDialogVisible = ref(false)
-// const handleSchedule = (row) =>{
-//   scheduleDialogVisible.value = true
-//   state.form.startTime = row.startTime
-//   state.form.endTime = row.endTime
-//
-// }
 const handleScheduleSave = (row) =>{
   // scheduleDialogVisible.value = false
   request.post('/appointment', {availabilityId: row.id}).then(res => {
@@ -200,12 +184,11 @@ const handleScheduleSave = (row) =>{
 
 // view
 const viewDialogVisible = ref(false)
-// 这个handle 要有不然弹窗打不开
 const handleView = (row) =>{
   viewDialogVisible.value = true
   nextTick(() => {
     state.form = JSON.parse(JSON.stringify(row))
-    valueHtml.value = row.content  // 富文本
+    valueHtml.value = row.content
     load()
     loadRating(row.tutorId)
     state.userOptions = []
@@ -264,35 +247,7 @@ const getDayOfWeek = (dateString) => {
           <Plus />
         </el-icon>  <span style="vertical-align: middle"> Add </span>
       </el-button>
-<!--      <el-upload-->
-<!--          v-if="auths.includes('availability.import')"-->
-<!--          class="ml5"-->
-<!--          :show-file-list="false"-->
-<!--          style="display: inline-block; position: relative; top: 3px"-->
-<!--          :action='`http://${config.serverUrl}/availability/import`'-->
-<!--          :on-success="handleImportSuccess"-->
-<!--          :headers="{ Authorization: token}"-->
-<!--      >-->
-<!--        <el-button type="primary">-->
-<!--          <el-icon style="vertical-align: middle">-->
-<!--            <Bottom />-->
-<!--          </el-icon>  <span style="vertical-align: middle"> 导入 </span>-->
-<!--        </el-button>-->
-<!--      </el-upload>-->
-<!--      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('availability.export')">-->
-<!--        <el-icon style="vertical-align: middle">-->
-<!--          <Top />-->
-<!--        </el-icon>  <span style="vertical-align: middle"> 导出 </span>-->
-<!--      </el-button>-->
-<!--      <el-popconfirm title="您确定删除吗？" @confirm="confirmDelBatch" v-if="auths.includes('availability.deleteBatch')">-->
-<!--        <template #reference>-->
-<!--          <el-button type="danger" style="margin-left: 5px">-->
-<!--            <el-icon style="vertical-align: middle">-->
-<!--              <Remove />-->
-<!--            </el-icon>  <span style="vertical-align: middle"> 批量删除 </span>-->
-<!--          </el-button>-->
-<!--        </template>-->
-<!--      </el-popconfirm>-->
+
     </div>
 
     <div style="margin: 10px 0">
@@ -319,7 +274,6 @@ const getDayOfWeek = (dateString) => {
           </template>
         </el-table-column>
         <el-table-column prop="tutorId" label="Tutor Id" v-if="user.role ==='ADMIN' || (user.role === 'TUTOR')"  ></el-table-column>
-<!--        <el-table-column label="tutor "><template #default="scope"><span v-if="scope.row.tutorId">{{ state.tutorOptions.find(v => v.id === scope.row.tutorId) ? state.tutorOptions.find(v => v.id === scope.row.tutorId).name : '' }}</span></template></el-table-column>-->
       <el-table-column prop="virtualLink" label="link" v-if="user.role ==='ADMIN' || (user.role === 'TUTOR')">
         <template #default="scope">
           <el-tooltip
@@ -387,7 +341,6 @@ const getDayOfWeek = (dateString) => {
       <el-form ref="ruleFormRef" :rules="rules" :model="state.form" label-width="120px" style="padding: 0 20px" status-icon>
         <el-form-item prop="name" label="Tutor Name" v-show="Hidden">
           <el-input v-model="state.form.name" autocomplete="off"></el-input>
-<!--          <el-input v-model="state.form.username" disabled></el-input>-->
         </el-form-item>
         <el-form-item prop="date" label="Date">
           <el-date-picker style="width: 100%" v-model="state.form.date" type="date" value-format="YYYY-MM-DD" placeholder="Choose Datetime"></el-date-picker>
@@ -404,9 +357,6 @@ const getDayOfWeek = (dateString) => {
           <el-input v-model="state.form.subject" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="tutorId" label="Tutor ID"  v-show="Hidden" >
-<!--          <el-select clearable v-model="state.form.tutorId" placeholder="pick"  style="width: 100%">-->
-<!--            <el-option v-for="item in state.tutorOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-<!--          </el-select>-->
           <el-input v-model="state.form.tutorId" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="nums" label="nums">
@@ -430,32 +380,7 @@ const getDayOfWeek = (dateString) => {
       </template>
     </el-dialog>
 
-    <!--schedule 的弹窗 -->
-<!--    <el-dialog v-model="scheduleDialogVisible" title="Schedule" width="30%">-->
-<!--      &lt;!&ndash; do schedule pop dialog in here &ndash;&gt;-->
-<!--      <el-form>-->
-<!--&lt;!&ndash;        <el-form-item label="Date" prop="date">&ndash;&gt;-->
-<!--&lt;!&ndash;          <el-date-picker v-model="scheduleForm.date" type="date" placeholder="Pick a date"></el-date-picker>&ndash;&gt;-->
-<!--&lt;!&ndash;        </el-form-item>&ndash;&gt;-->
-<!--        <el-form-item label="Start Time" prop="startTime">-->
-<!--          <el-time-select v-model="state.form.startTime" start="06:00" step="01:00" end="23:59" :max-time="state.form.endTime" :min-time="state.form.startTime" placeholder="Pick a time"></el-time-select>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="End Time" prop="endTime">-->
-<!--          <el-time-select v-model="state.form.endTime"  start="06:00" step="01:00" end="23:59" :max-time="state.form.endTime" :min-time="state.form.startTime" placeholder="Pick a time"></el-time-select>-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-<!--      <template #footer>-->
-<!--        <el-button @click="scheduleDialogVisible = false">Cancel</el-button>-->
-<!--        <el-button type="primary" @click="handleScheduleSave">Save</el-button>-->
-<!--      </template>-->
-<!--      &lt;!&ndash;      &ndash;&gt;-->
-<!--    </el-dialog>-->
-
-
-    <!--view 的弹窗 -->
     <el-dialog v-model="viewDialogVisible" title="Tutor Info" width="30%">
-<!--      do view pop dialog in here       -->
-<!--                <template #default="scope"><span v-if="scope.row.userId">{{ state.userOptions.find(v => v.id === scope.row.userId) ? state.userOptions.find(v => v.id === scope.row.userId).firstName: '' }}</span></template>-->
       <el-form :model="state.form" label-width="120px" style="padding: 0 20px">
 
         <div style="text-align: center; display: flex; justify-content: center; align-items: center; margin-bottom: 20px">
@@ -487,14 +412,6 @@ const getDayOfWeek = (dateString) => {
         </el-form-item>
 
       </el-form>
-<!--      include the rating here also      -->
-<!--      rating may content backend and database-->
-<!--      下面是按钮 可有可无 看情况而定        -->
-<!--      <template #footer>-->
-<!--        <el-button @click="viewDialogVisible = false">close</el-button>-->
-<!--        <el-button type="primary" @click="handleView">Save</el-button>-->
-<!--      </template>-->
-      <!--      -->
     </el-dialog>
 
     <el-dialog v-model="commentDialogVisible" width="800px">
@@ -533,7 +450,7 @@ const getDayOfWeek = (dateString) => {
 
  .el-link {
    display: inline-block;
-   max-width: 200px; /* 你可以根据需要设置最大宽度 */
+   max-width: 200px;
    overflow: hidden;
    text-overflow: ellipsis;
    white-space: nowrap;
