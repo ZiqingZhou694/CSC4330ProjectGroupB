@@ -1,8 +1,6 @@
 <script setup>
 import {onMounted, reactive, ref,watchEffect, computed} from "vue";
 import request from "@/utils/request";
-import {ElMessage} from "element-plus";
-import config from "../../config";
 import {useUserStore} from "@/stores/user";
 import * as echarts from "echarts";
 
@@ -214,7 +212,6 @@ setInterval(() => {
               <div style="width: auto; height: 32px; overflow: hidden; padding: 4px;margin-right: 5px;">
                 <div class="greeting" style=" margin-left: 10px; margin-right: 10px">{{ greetingTextByTime() }}  :</div>
               </div>
-<!--              <div style="width: 80%; display: flex">  :  <marquee>{{ randomSentences() }}</marquee></div> &lt;!&ndash; 滚动广播随机滚动几个句子 &ndash;&gt;-->
               <div style="width: 80%; height: 32px; overflow: hidden; border: 1px solid #ccc; border-radius: 4px; padding: 4px;">
                 <div class="scrolling-text">{{ randomSentences() }}</div>
               </div>
@@ -226,7 +223,6 @@ setInterval(() => {
               <template #dateCell="{ date, data }">
                 <div :class="data.isSelected ? 'is-selected' : ''">
                   <div>{{ data.day.split('-')[2] }} </div>
-<!--                  <div>{{ data.isSelected ? '✔️' : '' }} </div>-->
                   <div v-if="uniqueSubjectsByTime(state.arr, data.day).length > 0">
                     <div v-for="item in uniqueSubjectsByTime(state.arr, data.day)" :key="item.subject">
                       <el-tag :type="getTagType(item.date)">{{ item.subject }} {{ formatTime(item.time) }}</el-tag>
@@ -248,7 +244,6 @@ setInterval(() => {
               <span style="font-weight: bold; font-size: large">Message</span>
               <el-divider></el-divider>
               <div v-if="user.role ==='TUTOR'">
-                <!-- Use the state.pendingCount to determine if there is data to show -->
                 <template v-if="state.pendingCount > 0 || state.acceptedCount > 0 || state.TodayAppointmentCount > 0">
                 <template v-if="state.pendingCount > 0">
                   <el-alert type="warning" show-icon :closable="true" style="display: flex; align-items: center;">
@@ -300,7 +295,6 @@ setInterval(() => {
               </div>
 
               <div v-if="user.role ==='STUDENT'">
-                <!-- Same as above -->
                 <template v-if="state.pendingCount > 0 || state.acceptedCount > 0 || state.TodayAppointmentCount > 0 ||state.declinedCount > 0">
                 <template v-if="state.acceptedCount > 0">
                   <el-alert type="success" show-icon :closable="true" style="display: flex; align-items: center;">
@@ -327,7 +321,6 @@ setInterval(() => {
             </div>
           </template>
           <div style="display: flex">
-<!--            <div>message? remainder? or etc.?</div>-->
             <div style="width:100%; height: 500px;display: flex " id="pie"></div>
           </div>
         </el-card>

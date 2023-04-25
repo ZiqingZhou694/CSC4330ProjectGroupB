@@ -2,13 +2,11 @@
 import { nextTick, reactive, ref } from "vue";
 import request from "@/utils/request";
 import {ElMessage} from "element-plus";
-import config from "../../config";
 import {useUserStore} from "@/stores/user";
 
 
 const subject = ref('')
 const name = ref('')
-// const foreignId = ref()
 const pageNum = ref(1)
 const pageSize = ref(5)
 const total = ref(0)
@@ -26,22 +24,21 @@ const state = reactive({
     content:'',
     userId: user.id,
     username: user.username,
-    // foreignId: '',
   },
   rate:[]
 })
 
-const valueHtml = ref('')  // 富文本内容
+const valueHtml = ref('')
 
 state.availabilityOptions = []
 request.get('/availability').then(res => state.availabilityOptions = res.data)
 state.userOptions = []
 request.get('/user').then(res => state.userOptions = res.data)
-// userStore.getUser.then(res => state.userOptions = res.data)
+
 
 const multipleSelection = ref([])
 
-// 批量删除
+
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -55,7 +52,7 @@ const confirmDelBatch = () => {
   request.post('/appointment/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // 刷新表格数据
+      load()
     } else {
       ElMessage.error(res.msg)
     }
@@ -75,7 +72,7 @@ const load = () => {
     total.value = res.data.total
   })
 }
-load()  // 调用 load方法拿到后台数据
+load()
 
 const reset = () => {
   subject.value = ''
@@ -92,21 +89,19 @@ const rules = reactive({
 })
 const ruleFormRef = ref()
 
-// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = {}
-    valueHtml.value = ''  // 富文本
+    valueHtml.value = ''
   })
 }
 
-// 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
+  ruleFormRef.value.validate(valid => {
     if (valid) {
-      state.form.content = valueHtml.value  // 富文本保存内容
+      state.form.content = valueHtml.value
       request.request({
         url: '/appointment',
         method: state.form.id ? 'put' : 'post',
@@ -115,7 +110,7 @@ const save = () => {
         if (res.code === '200') {
           ElMessage.success('save success')
           dialogFormVisible.value = false
-          load()  // 刷新表格数据
+          load()
         } else {
           ElMessage.error(res.msg)
         }
@@ -124,48 +119,25 @@ const save = () => {
   })
 }
 
-// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = JSON.parse(JSON.stringify(raw))
-    valueHtml.value = raw.content  // 富文本
+    valueHtml.value = raw.content
   })
 }
 
-// 删除
 const del = (id) => {
   request.delete('/appointment/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('Cancel Success')
-      load()  // 刷新表格数据
+      load()
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
-
-// // 导出接口
-// const exportData = () => {
-//   window.open(`http://${config.serverUrl}/appointment/export`)
-// }
-
-
-// const handleImportSuccess = () => {
-//   // 刷新表格
-//   load()
-//   ElMessage.success("import success")
-// }
-//
-// const handleFileUploadSuccess = (res) => {
-//   state.form.file = res.data
-//   ElMessage.success('upload success')
-// }
-// const handleImgUploadSuccess = (res) => {
-//   state.form.img = res.data
-//   ElMessage.success('image uplaod success')
-// }
 
 const changeStatus = (row, status) =>{
   const formData = {...row}
@@ -184,7 +156,6 @@ const changeStatus = (row, status) =>{
   })
 }
 //rating
-// const value1 = ref(0)
 const colors = ['#99A9BF', '#F7BA2A', '#FF9900']
 const RateDialogVisible = ref(false)
 
@@ -197,12 +168,10 @@ const loadRating = async (foreignId) => {
     ElMessage.error('Failed to load rating data')
   }
 }
-// loadRating()
 const handleRating = (row) =>{
   RateDialogVisible.value = true
   state.rating.foreignId = row.tutorId
   loadRating(row.tutorId)
-  // state.rating.content = valueHtml.value  // 富文本保存内容
 }
 const handleRatingSubmit = () =>{
 
@@ -227,7 +196,6 @@ const handleRatingSubmit = () =>{
 <template>
   <div>
     <div v-if="user.role ==='ADMIN' || (user.role === 'TUTOR')">
-<!--      what kind key word for search not decide yet-->
       <el-input v-model="subject" placeholder="enter suject" class="w300" />
       <el-button type="primary" class="ml5" @click="load">
         <el-icon style="vertical-align: middle">
@@ -242,43 +210,6 @@ const handleRatingSubmit = () =>{
 
     </div>
 
-<!--    <div style="margin: 10px 0">-->
-<!--      <el-button type="success" @click="handleAdd" v-if="auths.includes('appointment.add')">-->
-<!--        <el-icon style="vertical-align: middle">-->
-<!--          <Plus />-->
-<!--        </el-icon>  <span style="vertical-align: middle"> 新增 </span>-->
-<!--      </el-button>-->
-<!--      <el-upload-->
-<!--          v-if="auths.includes('appointment.import')"-->
-<!--          class="ml5"-->
-<!--          :show-file-list="false"-->
-<!--          style="display: inline-block; position: relative; top: 3px"-->
-<!--          :action='`http://${config.serverUrl}/appointment/import`'-->
-<!--          :on-success="handleImportSuccess"-->
-<!--          :headers="{ Authorization: token}"-->
-<!--      >-->
-<!--        <el-button type="primary">-->
-<!--          <el-icon style="vertical-align: middle">-->
-<!--            <Bottom />-->
-<!--          </el-icon>  <span style="vertical-align: middle"> 导入 </span>-->
-<!--        </el-button>-->
-<!--      </el-upload>-->
-<!--      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('appointment.export')">-->
-<!--        <el-icon style="vertical-align: middle">-->
-<!--          <Top />-->
-<!--        </el-icon>  <span style="vertical-align: middle"> 导出 </span>-->
-<!--      </el-button>-->
-<!--      <el-popconfirm title="您确定删除吗？" @confirm="confirmDelBatch" v-if="auths.includes('appointment.deleteBatch')">-->
-<!--        <template #reference>-->
-<!--          <el-button type="danger" style="margin-left: 5px">-->
-<!--            <el-icon style="vertical-align: middle">-->
-<!--              <Remove />-->
-<!--            </el-icon>  <span style="vertical-align: middle"> 批量删除 </span>-->
-<!--          </el-button>-->
-<!--        </template>-->
-<!--      </el-popconfirm>-->
-<!--    </div>-->
-
     <div style="margin: 10px 0">
       <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
@@ -286,13 +217,11 @@ const handleRatingSubmit = () =>{
         <el-table-column prop="time" label="appointment time"></el-table-column>
       <el-table-column  label="Tutor" v-if="user.role ==='ADMIN'||user.role ==='STUDENT'">
         <template #default="scope">
-<!--          <span v-if="scope.row.availabilityId">{{ state.availabilityOptions.find(v => v.id === scope.row.availabilityId) ? state.availabilityOptions.find(v => v.id === scope.row.availabilityId).name : '' }}</span>-->
           {{scope.row.availability.name}}
         </template></el-table-column>
       <el-table-column prop="subject" label="Subject"></el-table-column>
       <el-table-column label="Student " v-if="user.role ==='ADMIN'|| user.role ==='TUTOR'">
         <template #default="scope">
-<!--          <span v-if="scope.row.userId">{{ state.userOptions.find(v => v.id === scope.row.userId) ? state.userOptions.find(v => v.id === scope.row.userId).firstName + ' ' + state.userOptions.find(v => v.id === scope.row.userId).lastName: '' }}</span>-->
           {{scope.row.user.firstName}} {{scope.row.user.lastName}}
         </template></el-table-column>
         <el-table-column prop="status" label="status" width="100"></el-table-column>
@@ -302,11 +231,6 @@ const handleRatingSubmit = () =>{
             <el-button type="primary" @click="handleRating(scope.row)" v-show="scope.row.status === 'Accepted'" >Rating</el-button>
           </template>
         </el-table-column>
-<!--        <el-table-column label="Rating" width="120">-->
-<!--          <template #default="scope">-->
-<!--            <el-button type="primary" @click="handleRating(scope.row)" v-show="scope.row.status === 'Accepted'" >Rate</el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
 
         <el-table-column label="Action" width="200" v-if="auths.includes('appointment.accept') ||auths.includes('appointment.decline')">
           <template #default="scope">
@@ -329,36 +253,6 @@ const handleRatingSubmit = () =>{
           :total="total"
       />
     </div>
-
-<!--    <el-dialog v-model="dialogFormVisible" title="Appointment Info" width="40%">-->
-<!--      <el-form ref="ruleFormRef" :rules="rules" :model="state.form" label-width="80px" style="padding: 0 20px" status-icon>-->
-<!--        <el-form-item prop="availabilityId" label="availability ">-->
-<!--          <el-select clearable v-model="state.form.availabilityId" placeholder="pick"  style="width: 100%">-->
-<!--            <el-option v-for="item in state.availabilityOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item prop="status" label="pending">-->
-<!--          <el-input v-model="state.form.status" autocomplete="off"></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item prop="time" label="appointment time">-->
-<!--          <el-date-picker style="width: 100%" v-model="state.form.time" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" placeholder="Choose Datetime"></el-date-picker>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item prop="userId" label="user ">-->
-<!--          <el-select clearable v-model="state.form.userId" placeholder="pick"  style="width: 100%">-->
-<!--            <el-option v-for="item in state.userOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
-
-<!--      </el-form>-->
-<!--      <template #footer>-->
-<!--      <span class="dialog-footer">-->
-<!--        <el-button @click="dialogFormVisible = false">Cancel</el-button>-->
-<!--        <el-button type="primary" @click="save">-->
-<!--          Save-->
-<!--        </el-button>-->
-<!--      </span>-->
-<!--      </template>-->
-<!--    </el-dialog>-->
 
     <el-dialog v-model="RateDialogVisible" title="Rating" width="30%">
       <div style="margin: 20px 0">
