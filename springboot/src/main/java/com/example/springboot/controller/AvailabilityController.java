@@ -100,7 +100,6 @@ public class AvailabilityController {
         if(user.getRole().equals("TUTOR")){
             queryWrapper.eq("tutor_id", user.getId());
         }
-        //这里写一个 if expired 让student 看不到那些已经过期的预约选项
         //.......
         if(user.getRole().equals("STUDENT")){
             queryWrapper.eq("status", "Available");

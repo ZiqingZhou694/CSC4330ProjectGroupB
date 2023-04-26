@@ -65,11 +65,6 @@ public class AppointmentController {
         appointment.setTime(DateUtil.now());
         appointment.setTutorId(availability.getTutorId());
         appointment.setSubject(availability.getSubject());
-//        User user = SessionUtils.getUser();
-//        appointment.setUser(user.getName());
-//        appointment.setUserid(user.getId());
-//        appointment.setDate(DateUtil.today());
-//        appointment.setTime(DateUtil.now());
         appointmentService.save(appointment);
         return Result.success();
     }

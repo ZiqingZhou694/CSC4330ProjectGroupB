@@ -7,6 +7,7 @@ import com.example.springboot.controller.domain.UserRequest;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.IUserService;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +21,9 @@ public class WebController {
     IUserService userService;
 
     @GetMapping(value = "/")
-//    @ApiOperation(value = "Version verification interface")
-//    don't know why need this, but it is in the tutorial I learn. might not need or will change this
+    @ApiOperation(value = "Version verification interface")
     public String version() {
-        String ver = "user-appointment-0.0.1-SNAPSHOT";  // make up version
+        String ver = "Tutoring-Center-0.0.1-SNAPSHOT";  // make up version
         Package aPackage = WebController.class.getPackage();
         String title = aPackage.getImplementationTitle();
         String version = aPackage.getImplementationVersion();

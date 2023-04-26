@@ -30,7 +30,6 @@ public class StpInterfaceImpl implements StpInterface {
         List<Permission> permissions = userService.getPermissions(roleFlag);
         return permissions.stream().map(Permission::getAuth).filter(StrUtil::isNotBlank)
                 .collect(Collectors.toList());  // A collection of permissions as strings
-        //  ["user.add", "user.edit"]
     }
 
 //    Return a collection of role identifiers that an account possesses (permissions and roles can be checked separately)

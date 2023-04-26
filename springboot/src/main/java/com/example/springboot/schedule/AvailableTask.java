@@ -34,12 +34,9 @@ public class AvailableTask {
         log.info("I am a scheduled task, and my task to update the availability status begins.");
 
         List<Availability> updateList = new ArrayList<>();
-        // 扫描整个活动表 Scan the entire availability table.
+        // Scan the entire availability table.
         List<Availability> list = availabilityService.list();
         for (Availability availability : list) {
-//            if ("Expired".equals(availability.getStatus())) { // if expire don't change
-//                continue;
-//            }
             String startTime = availability.getDate() + " " + availability.getStartTime();
             String endTime = availability.getDate() +" "+ availability.getEndTime();
             DateTime startDateTime = DateUtil.parse(startTime, "yyyy-MM-dd HH:mm:ss");  // start
@@ -54,13 +51,6 @@ public class AvailableTask {
                 updateList.add(availability);
             }
 
-//           if (now.isAfterOrEquals(startDateTime) && now.isBeforeOrEquals(endDateTime)) {
-//                availability.setStatus("available");
-//                updateList.add(availability);
-//            } else if (now.isAfter(endDateTime)) {
-//                availability.setStatus("Expired");
-//                updateList.add(availability);
-//            }
 
         }
 
@@ -73,7 +63,7 @@ public class AvailableTask {
 
         log.info("I am a scheduled task, and my task to update the appointment status begins.");
 
-        //一个小时后 取消
+        //hour later deleted
         List<Appointment> appointmentList = appointmentService.list(new QueryWrapper<Appointment>().eq("status", "Pending"));
         for(Appointment appointment : appointmentList){
             String time = appointment.getTime();
@@ -94,31 +84,9 @@ public class AvailableTask {
 
         log.info("I am a scheduled task, and my task to update the appointment status has ended.");
 
-        log.info("I am a scheduled task, and my task to update the appointment time begins.");
-        List<Appointment> appointmentList2 = appointmentService.list();
-        for(Appointment appointment : appointmentList2){
-            String time = appointment.getTime();
-            DateTime datetime = DateUtil.parseDateTime(time);
-
-            // 偏移30天
-            datetime = DateUtil.offsetDay(datetime, 30);
-            if(datetime.isBefore(new Date())){
-
-                Integer availabilityId = appointment.getAvailabilityId();
-                Availability availability = availabilityService.getById(availabilityId);
-//                availability.setNumsLeft(availability.getNumsLeft() + 1);
-//                availabilityService.updateById(availability);
-                appointmentService.removeById(appointment.getId());
-                User user = userService.getById(appointment.getUserId());
-                log.info("Cancel {}'s {} appointment ", user.getLastName(), availability.getSubject());
-            }
-        }
-        log.info("I am a scheduled task, and my task to update the appointment status has ended.");
-
-
     }
 
-    //每个月1号删除
+    //deleted every month the 1th
     @Scheduled(cron = "0 0 0 1 * ?")
     public void monthlyTask() {
         log.info("I am a scheduled task, and my task to update the appointment time begins.");
@@ -127,9 +95,8 @@ public class AvailableTask {
             String time = appointment.getTime();
             DateTime datetime = DateUtil.parseDateTime(time);
 
-            // 偏移30天
-            // datetime = DateUtil.offsetDay(datetime, 30); // 不再需要这一行
-            if(DateUtil.dayOfMonth(datetime) == 1){ // 检查是否是每月的第一天
+
+            if(DateUtil.dayOfMonth(datetime) == 1){
 
                 Integer availabilityId = appointment.getAvailabilityId();
                 Availability availability = availabilityService.getById(availabilityId);

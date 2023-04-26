@@ -52,6 +52,8 @@ private static final long serialVersionUID = 1L;
     @TableLogic(value = "0", delval = "id")
     private Integer deleted;
 
+    @ApiModelProperty("subject")
+    @Alias("subject")
     private String subject;
 
     @TableField(exist = false)

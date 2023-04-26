@@ -21,10 +21,16 @@ private static final long serialVersionUID = 1L;
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    @ApiModelProperty("code")
+    @Alias("code")
     private String code;
 
+    @ApiModelProperty("value")
+    @Alias("value")
     private String value;
 
+    @ApiModelProperty("type")
+    @Alias("type")
     private String type;
 
     @TableLogic(value = "0", delval = "id")

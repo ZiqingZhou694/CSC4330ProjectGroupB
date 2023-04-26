@@ -80,5 +80,7 @@ private static final long serialVersionUID = 1L;
     @Alias("role")
     private String role;
 
+    @ApiModelProperty("content")
+    @Alias("content")
     private String content;
 }

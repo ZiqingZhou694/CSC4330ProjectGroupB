@@ -30,19 +30,28 @@ private static final long serialVersionUID = 1L;
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    @ApiModelProperty("name")
+    @Alias("name")
     private String name;
 
+    @ApiModelProperty("flag")
+    @Alias("flag")
     private String flag;
+
+    @ApiModelProperty("delete logic")
+    @Alias("delete logic")
     @TableLogic(value = "0", delval = "id")
     private Integer deleted;
 
-
+    @ApiModelProperty("create date")
+    @Alias("create date")
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LDTConfig.CmzLdtDeSerializer.class)
     @JsonSerialize(using = LDTConfig.CmzLdtSerializer.class)
     private LocalDateTime createTime;
 
-
+    @ApiModelProperty("update time")
+    @Alias("update time")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonDeserialize(using = LDTConfig.CmzLdtDeSerializer.class)
     @JsonSerialize(using = LDTConfig.CmzLdtSerializer.class)

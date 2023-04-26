@@ -46,28 +46,4 @@ public class CommentController {
         map.put("comments", comments);
         return  map;
     }
-//
-//    @GetMapping("/{id}")
-////    @SaCheckPermission("user.list")
-//    public Result findOne(@PathVariable Integer id) {
-//        return Result.success(commentService.getById(id));
-//    }
-
-
-//    @GetMapping
-//    public Result findByForeignId(@RequestParam Integer foreignId) {
-//        Map<String, Object> map = new HashMap<>();
-//
-//        List<Comment> comments = commentService.findByForeignId(foreignId);
-//
-//        map.put("rate", BigDecimal.ZERO);
-//        List<Comment> commentList = comments.stream().filter(comment -> comment.getRate() != null).collect(Collectors.toList());
-//        commentList.stream().map(Comment::getRate).reduce(BigDecimal::add).ifPresent(res -> {
-//            map.put("rate", res.divide(BigDecimal.valueOf(commentList.size()), 1, RoundingMode.HALF_UP));
-//        });
-//
-//        map.put("comments", comments);
-//
-//        return Result.success(map);
-//    }
 }
