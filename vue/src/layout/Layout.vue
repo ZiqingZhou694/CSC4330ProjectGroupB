@@ -28,13 +28,12 @@ const getAvatarHandler = (avatar) => {
   <div>
     <div style="height: 60px; line-height: 60px; border-bottom: 1px solid #ccc; background-color: aliceblue">
       <div style="display: flex">
-<!--        改动-->
+
         <router-link to="/index" style="text-decoration: none">
         <div style="width: 200px; color: dodgerblue; font-weight: bold;  text-align: center; font-size: 20px">
           <img src="../assets/lsu.png" alt="" style="width: 40px; position: relative; top: 5px">
           Tutoring Center
         </div>
-<!--          改动 -->
         </router-link>
 
 

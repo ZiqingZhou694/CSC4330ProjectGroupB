@@ -237,19 +237,18 @@ const handleRatingSubmit = () =>{
         </el-table-column>
       <el-table-column  label="Tutor" v-if="user.role ==='ADMIN'||user.role ==='STUDENT'">
         <template #default="scope">
-<!--          <span v-if="scope.row.availabilityId">{{ state.availabilityOptions.find(v => v.id === scope.row.availabilityId) ? state.availabilityOptions.find(v => v.id === scope.row.availabilityId).name : '' }}</span>-->
           {{scope.row.availability.name}}
         </template></el-table-column>
       <el-table-column prop="subject" label="Subject"></el-table-column>
       <el-table-column label="Student " v-if="user.role ==='ADMIN'|| user.role ==='TUTOR'">
         <template #default="scope">
-<!--          <span v-if="scope.row.userId">{{ state.userOptions.find(v => v.id === scope.row.userId) ? state.userOptions.find(v => v.id === scope.row.userId).firstName + ' ' + state.userOptions.find(v => v.id === scope.row.userId).lastName: '' }}</span>-->
+
           {{scope.row.user.firstName}} {{scope.row.user.lastName}}
         </template></el-table-column>
         <el-table-column prop="status" label="status" width="100">
           <template #default = "scope">
             <el-tag v-if="scope.row.status === 'Accepted'" type="success">Accepted</el-tag>
-            <el-tag v-if="scope.row.status === 'Decline'" type="danger">Decline</el-tag>
+            <el-tag v-if="scope.row.status === 'Declined'" type="danger">Declined</el-tag>
             <el-tag v-if="scope.row.status === 'Pending'" type="warning">Pending</el-tag>
           </template>
         </el-table-column>

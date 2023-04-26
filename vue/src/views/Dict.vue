@@ -16,21 +16,20 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// 批量删除
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
 
 const confirmDelBatch = () => {
   if (!multipleSelection.value || !multipleSelection.value.length) {
-    ElMessage.warning("请选择数据")
+    ElMessage.warning("please choose an data")
     return
   }
   const idArr = multipleSelection.value.map(v => v.id)
   request.post('/dict/del/batch', idArr).then(res => {
     if (res.code === '200') {
-      ElMessage.success('操作成功')
-      load()  // 刷新表格数据
+      ElMessage.success('success')
+      load()
     } else {
       ElMessage.error(res.msg)
     }
@@ -49,7 +48,7 @@ const load = () => {
     total.value = res.data.total
   })
 }
-load()  // 调用 load方法拿到后台数据
+load()
 
 const reset = () => {
   name.value = ''
@@ -60,12 +59,11 @@ const dialogFormVisible = ref(false)
 
 const rules = reactive({
   name: [
-    { required: true, message: '请输入名称', trigger: 'blur' },
+    { required: true, message: 'enter name', trigger: 'blur' },
   ]
 })
 const ruleFormRef = ref()
 
-// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -74,9 +72,8 @@ const handleAdd = () => {
   })
 }
 
-// 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
+  ruleFormRef.value.validate(valid => {
     if (valid) {
       request.request({
         url: '/dict',
@@ -84,9 +81,9 @@ const save = () => {
         data: state.form
       }).then(res => {
         if (res.code === '200') {
-          ElMessage.success('保存成功')
+          ElMessage.success('save success')
           dialogFormVisible.value = false
-          load()  // 刷新表格数据
+          load()
         } else {
           ElMessage.error(res.msg)
         }
@@ -95,7 +92,6 @@ const save = () => {
   })
 }
 
-// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -104,32 +100,20 @@ const handleEdit = (raw) => {
   })
 }
 
-// 删除
 const del = (id) => {
   request.delete('/dict/' + id).then(res => {
     if (res.code === '200') {
-      ElMessage.success('操作成功')
-      load()  // 刷新表格数据
+      ElMessage.success('success')
+      load()
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
-
-// // 导出接口
-// const exportData = () => {
-//   window.open(`http://${config.serverUrl}/dict/export`)
-// }
-
 const userStore = useUserStore()
 const token = userStore.getBearerToken
 const auths =  userStore.getAuths
 
-// const handleImportSuccess = () => {
-//   // 刷新表格
-//   load()
-//   ElMessage.success("导入成功")
-// }
 </script>
 
 <template>
@@ -155,26 +139,6 @@ const auths =  userStore.getAuths
           <Plus />
         </el-icon>  <span style="vertical-align: middle"> Add </span>
       </el-button>
-<!--      <el-upload-->
-<!--          v-if="auths.includes('dict.import')"-->
-<!--          class="ml5"-->
-<!--          :show-file-list="false"-->
-<!--          style="display: inline-block; position: relative; top: 3px"-->
-<!--          :action='`http://${config.serverUrl}/dict/import`'-->
-<!--          :on-success="handleImportSuccess"-->
-<!--          :headers="{ Authorization: token}"-->
-<!--      >-->
-<!--        <el-button type="primary">-->
-<!--          <el-icon style="vertical-align: middle">-->
-<!--            <Bottom />-->
-<!--          </el-icon>  <span style="vertical-align: middle"> 导入 </span>-->
-<!--        </el-button>-->
-<!--      </el-upload>-->
-<!--      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('dict.export')">-->
-<!--        <el-icon style="vertical-align: middle">-->
-<!--          <Top />-->
-<!--        </el-icon>  <span style="vertical-align: middle"> 导出 </span>-->
-<!--      </el-button>-->
       <el-popconfirm title="you want to delete this?" @confirm="confirmDelBatch" v-if="auths.includes('dict.deleteBatch')">
         <template #reference>
           <el-button type="danger" style="margin-left: 5px">

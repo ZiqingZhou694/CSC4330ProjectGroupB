@@ -43,7 +43,7 @@ const load = () => {
       time: record.availability.startTime
     }))
     total.value = res.data.total
-    drawPieChart(); // 在这里调用 drawPieChart
+    drawPieChart();
   })
 }
 load()
@@ -57,7 +57,7 @@ const loadUser = () => {
     console.log('Admin:', state.adminCount);
     console.log('Tutor:', state.tutorCount);
     console.log('Student:', state.studentCount);
-    drawPieChart(); // 在这里调用 drawPieChart
+    drawPieChart();
   });
 }
 loadUser()
@@ -100,12 +100,6 @@ const getTagType = (appointmentDateString) => {
   }
 }
 
-
-// watchEffect(() => {
-//   const today = new Date().toLocaleDateString();
-//   state.pendingCount = state.arr.filter(item => item.status === 'Pending').length;
-//   state.acceptedCount = state.arr.filter(item => item.status === 'Accepted' && item.date === today).length;
-// })
 watchEffect(() => {
   const todayDate = new Date();
   const today = `${todayDate.getFullYear()}-${(todayDate.getMonth() + 1).toString().padStart(2, '0')}-${todayDate.getDate().toString().padStart(2, '0')}`;
@@ -123,11 +117,6 @@ watchEffect(() => {
     const itemDateString = `${itemDate.getFullYear()}-${(itemDate.getMonth() + 1).toString().padStart(2, '0')}-${itemDate.getDate().toString().padStart(2, '0')}`;
     return item.status === 'Declined' && itemDateString === today;
   }).length;
-  // console.log(today);
-  // console.log(state.TodayAppointmentCount);
-  // state.TotalAcceptCount = state.arr.filter(item => item.status === 'Accepted').length;
-  // console.log(state.TotalAcceptCount);
-
 })
 
 const TotalAdmin = computed(() =>

@@ -254,7 +254,6 @@ const getDayOfWeek = (dateString) => {
       <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="Id" v-if="user.role ==='ADMIN'"></el-table-column>
-<!--        <el-table-column prop="date" label="date"></el-table-column>-->
         <el-table-column label="date">
           <template #default="scope">
             {{ scope.row.date }}
@@ -294,7 +293,6 @@ const getDayOfWeek = (dateString) => {
             {{scope.row.numsLeft}} / {{scope.row.nums}}
           </template>
         </el-table-column>
-<!--        <el-table-column prop="numsLeft" width="100" label="nums Left"></el-table-column>-->
         <el-table-column prop="status" label="status" v-if="auths.includes('availability.status')" width="100">
           <template #default = "scope">
             <el-tag v-if="scope.row.status === 'Available'" type="success">Available</el-tag>

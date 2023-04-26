@@ -77,7 +77,7 @@ public class DictController {
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Dict> queryWrapper = new QueryWrapper<Dict>().orderByDesc("id");
-        queryWrapper.like(!"".equals(name), "name", name);
+        queryWrapper.like(!"".equals(name), "code", name);
         return Result.success(dictService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 

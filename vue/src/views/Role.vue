@@ -22,7 +22,7 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// 批量删除
+
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -36,7 +36,7 @@ const confirmDelBatch = () => {
   request.post('/role/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('successs')
-      load()  // 刷新表格数据
+      load()
     } else {
       ElMessage.error(res.msg)
     }
@@ -59,7 +59,7 @@ const load = () => {
     state.treeData = res.data
   })
 }
-load()  // 调用 load方法拿到后台数据
+load()
 
 const reset = () => {
   name.value = ''
@@ -78,7 +78,7 @@ const rules = reactive({
 })
 const ruleFormRef = ref()
 
-// 新增
+
 const handleAdd = () => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -87,13 +87,11 @@ const handleAdd = () => {
   })
 }
 
-// 保存
+
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
+  ruleFormRef.value.validate(valid => {
     if (valid) {
-      // 目前被选中的菜单节点
       let checkedKeys = permissionTreeRef.value.getCheckedKeys();
-      // 半选中的菜单节点
       let halfCheckedKeys = permissionTreeRef.value.getHalfCheckedKeys();
       checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
 
@@ -106,7 +104,7 @@ const save = () => {
         if (res.code === '200') {
           ElMessage.success('Save success')
           dialogFormVisible.value = false
-          load()  // 刷新表格数据
+          load()
           if (state.form.flag === 'ADMIN') {
             logout()
           }
@@ -118,21 +116,19 @@ const save = () => {
   })
 }
 
-// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
     ruleFormRef.value.resetFields()
     state.form = JSON.parse(JSON.stringify(raw))
 
-    permissionTreeRef.value.setCheckedKeys([])  // 先清除选中的节点
+    permissionTreeRef.value.setCheckedKeys([])
     raw.permissionIds.forEach(v => {
-      permissionTreeRef.value.setChecked(v, true, false)  // 给权限树设置选中的节点
+      permissionTreeRef.value.setChecked(v, true, false)
     })
   })
 }
 
-// 删除
 const del = (id) => {
   request.delete('/role/' + id).then(res => {
     if (res.code === '200') {
@@ -143,21 +139,6 @@ const del = (id) => {
     }
   })
 }
-
-// // 导出接口
-// const exportData = () => {
-//   window.open(`http://${config.serverUrl}/role/export`)
-// }
-
-
-
-// const handleImportSuccess = () => {
-//   // 刷新表格
-//   load()
-//   ElMessage.success("import success")
-// }
-
-
 const logout = () => {
   request.get('/logout/' + user.uid).then(res => {
     if (res.code === '200') {

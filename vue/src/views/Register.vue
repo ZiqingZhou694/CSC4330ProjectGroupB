@@ -42,7 +42,6 @@ import router from "@/router";
   const login = () => {
     ruleFormRef.value.validate(valid => {
       if (valid) {
-          // 发送表单数据给后台
           request.post('/register', RegisterData).then(res => {
             if (res.code === '200') {
               ElMessage.success('register successfully')
@@ -61,13 +60,11 @@ import router from "@/router";
 <template>
   <div style="height: 100vh; overflow: hidden; background-color: aliceblue">
     <div style="width: 100%; background-color: rgba(65, 105, 225,.1);padding: 15px 30px; color: dodgerblue; font-size: 20px; position: absolute">
-      <!--        改动-->
       <router-link to="/" style="text-decoration: none" @click="Refresh">
         <div style="width: 200px; color: dodgerblue; font-weight: bold;  text-align: center; font-size: 20px">
           <img src="../assets/lsu.png" alt="" style="width: 40px; position: relative; top: 5px;">
           Tutoring Center
         </div>
-        <!--          改动 -->
       </router-link>
     </div>
     <div style="display: flex; width: 50%; margin: 120px auto; background-color: white;

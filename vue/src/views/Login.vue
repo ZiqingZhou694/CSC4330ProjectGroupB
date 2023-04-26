@@ -20,13 +20,11 @@ const rules = reactive({
 const ruleFormRef = ref()
 const login = () => {
   ruleFormRef.value.validate(valid => {
-      // 发送表单数据给后台
       request.post('/login', loginData).then(res => {
         if (res.code === '200') {
           ElMessage.success('login success')
           const userStore = useUserStore()
           userStore.setManagerInfo(res.data)
-          // router.push('/')
           router.push('/home')
 
         } else {
@@ -48,15 +46,12 @@ const Refresh = () => {
 <template>
   <div style="height: 100vh; overflow: hidden; background-color: aliceblue">
     <div style="width: 100%; background-color: rgba(65, 105, 225,.1);padding: 15px 30px; color: dodgerblue; font-size: 20px; position: absolute">
-<!--      Tutoring Center-->
       <div style="width: 20px">
-        <!--        改动-->
         <router-link to="/" style="text-decoration: none" @click="Refresh">
           <div style="width: 200px; color: dodgerblue; font-weight: bold;  text-align: center; font-size: 20px">
             <img src="../assets/lsu.png" alt="" style="width: 40px; position: relative; top: 5px;">
             Tutoring Center
           </div>
-          <!--          改动 -->
         </router-link>
       </div>
     </div>

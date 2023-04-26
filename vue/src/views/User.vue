@@ -18,7 +18,7 @@ const state = reactive({
 })
 const multipleSelection = ref([])
 
-// 批量删除
+
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
 }
@@ -32,7 +32,7 @@ const confirmDelBatch = () => {
   request.post('/user/del/batch', idArr).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // 刷新表格数据
+      load()
     } else {
       ElMessage.error(res.msg)
     }
@@ -56,7 +56,7 @@ const load = () => {
     roles.value = res.data
   })
 }
-load()  // 调用 load方法拿到后台数据
+load()
 
 const reset = () => {
   lastName.value = ''
@@ -89,16 +89,14 @@ const rules = reactive({
 })
 const ruleFormRef = ref()
 
-// 新增
 const handleAdd = () => {
   dialogFormVisible.value = true
   ruleFormRef.value.resetFields()
   state.form = {}
 }
 
-// 保存
 const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
+  ruleFormRef.value.validate(valid => {
     if (valid) {
       request.request({
         url: '/user',
@@ -108,7 +106,7 @@ const save = () => {
         if (res.code === '200') {
           ElMessage.success('save success')
           dialogFormVisible.value = false
-          load()  // 刷新表格数据
+          load()
         } else {
           ElMessage.error(res.msg)
         }
@@ -117,7 +115,6 @@ const save = () => {
   })
 }
 
-// 编辑
 const handleEdit = (raw) => {
   dialogFormVisible.value = true
   nextTick(() => {
@@ -126,19 +123,17 @@ const handleEdit = (raw) => {
   })
 }
 
-// 删除
 const del = (id) => {
   request.delete('/user/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('success')
-      load()  // 刷新表格数据
+      load()
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-// 导出接口
 const exportData = () => {
   window.open(`http://${config.serverUrl}/user/export`)
 }
@@ -148,7 +143,7 @@ const token = userStore.getBearerToken
 const auths = userStore.getAuths
 
 const handleImportSuccess = () => {
-  // 刷新表格
+
   load()
   ElMessage.success("import success")
 }
