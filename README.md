@@ -5,11 +5,11 @@ This is a springboot+Vue project, details read project Demonstration Document
 # Project Envierment
 
 * Intellij IDEA
-MYSQL 
-Redis
-node.js
-jdk 1.8
-Maven
+* MYSQL 
+* Redis
+* node.js
+* jdk 1.8
+* Maven
 
 # How to run 
 
