@@ -4,7 +4,7 @@ This is a springboot+Vue project, details read project Demonstration Document
 
 # Project Envierment
 
-Intellij IDEA
+* Intellij IDEA
 MYSQL 
 Redis
 node.js
