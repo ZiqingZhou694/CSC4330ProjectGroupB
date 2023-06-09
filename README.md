@@ -1,6 +1,7 @@
 # University-Tutor-Center
 
-This is a springboot+Vue project, details read project Demonstration Document 
+This is a springboot+Vue project.
+Project details please read project Demonstration Document.
 
 # Project Envierment
 
